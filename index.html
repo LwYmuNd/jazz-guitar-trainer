@@ -11,6 +11,14 @@
 </head>
 <body>
   <div id="app">
+    <button class="hamburger-btn" id="hamburgerBtn" aria-label="打开菜单">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-brand">
         <div class="brand-icon">
@@ -40,14 +48,21 @@
         </button>
       </nav>
       <div class="sidebar-footer">
+        <div class="zoom-controls">
+          <button class="zoom-btn" id="zoomOut" aria-label="缩小">-</button>
+          <button class="zoom-btn zoom-value" id="zoomValue">100%</button>
+          <button class="zoom-btn" id="zoomIn" aria-label="放大">+</button>
+        </div>
         <span class="version-tag">v1.0</span>
       </div>
     </aside>
     <main class="app-main">
-      <div id="mod-noteDegree" class="module active"></div>
-      <div id="mod-fretboard" class="module"></div>
-      <div id="mod-chordDiagram" class="module"></div>
-      <div id="mod-earTraining" class="module"></div>
+      <div class="app-main-inner">
+        <div id="mod-noteDegree" class="module active"></div>
+        <div id="mod-fretboard" class="module"></div>
+        <div id="mod-chordDiagram" class="module"></div>
+        <div id="mod-earTraining" class="module"></div>
+      </div>
     </main>
   </div>
   <script type="module" src="/src/main.js"></script>
