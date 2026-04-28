@@ -4,6 +4,7 @@ import { initNoteDegree } from './modules/note-degree.js';
 import { initFretboard } from './modules/fretboard.js';
 import { initChordDiagrams } from './modules/chord-diagrams.js';
 import { initEarTraining } from './modules/ear-training.js';
+import { initIntervalTraining } from './modules/interval-training.js';
 import { initZoomControl } from './utils/zoom-control.js';
 
 // 侧边栏切换
@@ -49,3 +50,4 @@ initNoteDegree();
 initFretboard();
 initChordDiagrams();
 initEarTraining();
+initIntervalTraining();

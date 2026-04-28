@@ -195,12 +195,12 @@ select optgroup { font-weight: 600; color: var(--text-muted); }
   box-shadow: 3px 3px 8px rgba(0,0,0,0.06), inset 1px 1px 2px rgba(255,255,255,0.8);
 }
 .degree-toggle button {
-  padding: 6px 14px;
+  padding: 5px 10px;
   border: none;
   background: var(--card-bg);
   color: var(--text-muted);
   font-family: var(--font-body);
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 200ms;
@@ -370,7 +370,7 @@ select optgroup { font-weight: 600; color: var(--text-muted); }
   line-height: 1.6;
 }
 .degree-toggle-wide button:last-child {
-  min-width: 120px;
+  min-width: 96px;
 }
 .ear-question-display {
   min-height: 180px;
@@ -741,7 +741,7 @@ select optgroup { font-weight: 600; color: var(--text-muted); }
   .fretboard { padding: 8px; }
   .cd-layout { grid-template-columns: 1fr; }
   .chord-diagram-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
-  .degree-toggle button { padding: 5px 10px; font-size: 0.75rem; }
+  .degree-toggle button { padding: 4px 8px; font-size: 0.72rem; }
   .ear-question-display { min-height: 150px; }
   .module-intro { font-size: 0.88rem; }
   .ear-config-panel { padding: 14px; }
@@ -754,3 +754,18 @@ select optgroup { font-weight: 600; color: var(--text-muted); }
   .ear-prompt strong { font-size: 1.9rem; }
   .ear-feedback { padding: 14px; }
 }
+
+/* Interval Training Styles */
+.interval-toggle button {
+  padding: 6px 10px;
+  min-width: 0;
+  font-size: 0.78rem;
+}
+.interval-toggle button + button {
+  border-left: 1px solid var(--clay-border);
+}
+.ear-diagram-option.is-correct-option {
+  border-color: rgba(34,197,94,0.35);
+  background: rgba(34,197,94,0.06);
+}
+

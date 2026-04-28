@@ -2,7 +2,7 @@
 
 一个面向现代爵士吉他练习的静态小工具。当前项目包含指板、音名/级数、和弦图，以及正在持续补强的和弦练耳模块。
 
-在线地址：`https://seantong11.github.io/jazz-guitar-trainer/`
+在线地址：`https://lwymund.github.io/jazz-guitar-trainer`
 
 ## 本地开发
 
