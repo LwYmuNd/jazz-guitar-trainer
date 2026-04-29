@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-Jazz Guitar Trainer 是一个面向现代爵士吉他练习的静态 Web 应用，包含指板可视化、音名/级数训练、和弦图查看以及和弦练耳模块。
+Jazz Guitar Trainer 是一个面向现代爵士吉他练习的静态 Web 应用，包含指板可视化、音名/级数训练、和弦图查看、和弦练耳以及音程练耳模块。
 
 在线地址：https://lwymund.github.io/jazz-guitar-trainer
 
@@ -44,13 +44,15 @@ src/
 ├── core/                # 核心业务逻辑（不依赖 DOM）
 │   ├── music-theory.js       # 音乐理论基础（音符、音阶、调式）
 │   ├── chord-ear-training.js # 和弦练耳题库生成与规则
+│   ├── interval-ear-training.js # 音程练耳题库生成与规则
 │   ├── chord-voicings.js     # Drop2/Drop3 voicing 数据库
 │   └── audio-engine.js       # Tone.js 音频播放封装
 ├── modules/             # UI 模块（对应页面中的各个功能区）
 │   ├── note-degree.js        # 音名/级数训练模块
 │   ├── fretboard.js          # 指板可视化模块
 │   ├── chord-diagrams.js     # 和弦图查看模块
-│   └── ear-training.js       # 和弦练耳 UI 与交互
+│   ├── ear-training.js       # 和弦练耳 UI 与交互
+│   └── interval-training.js  # 音程练耳 UI 与交互
 ├── components/          # 可复用 UI 组件
 │   └── custom-select.js      # 自定义下拉选择器
 ├── utils/               # 工具函数
@@ -81,6 +83,14 @@ src/
    - 答题后动态渲染当前 voicing family 的指板参考图
    - 根据当前 root、voicing family、inversion 生成多组可替代的弦集按法
    - 圆点显示相对音程，左侧显示 fret 编号
+
+5. **音程练耳核心逻辑**
+   - `interval-ear-training.js` 包含 12 个基础音程定义（m2 到 P8）
+   - 支持旋律音程（先后播放）与和声音程（同时播放）两种题型
+   - 支持上行/下行/随机方向、固定根音/随机根音（可限定范围）
+   - 选项仅从当前题库中取，按顺序排列，不添加外部干扰项
+   - 答题后可试听所有选项对应的音程，用于对比学习
+   - 提供 Custom（默认空题库）及三个预设模板，手动修改题库后自动回退 Custom
 
 ## 重要约定
 
@@ -124,7 +134,7 @@ src/
 - 测试文件位于 `tests/` 目录
 - 仅测试 `core/` 层的纯逻辑函数
 - UI 功能通过本地开发服务器手动验证
-- 重点测试和弦题库生成、voicing 计算、音符转换等核心逻辑
+- 重点测试和弦题库生成、voicing 计算、音符转换、音程题库生成等核心逻辑
 
 ## 部署配置
 
