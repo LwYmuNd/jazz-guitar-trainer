@@ -7,6 +7,7 @@ import {
   VOICING_FAMILY_OPTIONS,
   VOICING_OPTIONS,
   buildChordPool,
+  buildChordNotes,
   buildPlaybackEvents,
   createQuestion,
   EAR_TRAINING_ROOTS,
@@ -254,6 +255,25 @@ function renderFeedbackMarkup(question, isCorrect){
       </div>
       <div class="ear-feedback-context">${PLAYBACK_MODE_LABELS[question.playbackMode]} playback · ${question.voicingLabel}</div>
       ${renderDiagramMarkup(question)}
+      <div class="ear-diagram-card">
+        <div class="ear-diagram-head">
+          <strong>试听所有选项</strong>
+          <span>点击任意选项可播放对应和弦</span>
+        </div>
+        <div class="ear-diagram-grid">
+          ${question.optionIds.map((id, i) => {
+            const isCorrectOpt = id === question.correctOptionId;
+            return `
+              <div class="ear-diagram-option ${isCorrectOpt ? 'is-correct-option' : ''}">
+                <div class="ear-diagram-option-head">
+                  <strong>${question.optionLabels[i]}</strong>
+                </div>
+                <button class="btn btn-secondary chord-preview-btn" data-option-id="${id}">🔊 试听</button>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
     </div>
   `;
 }
@@ -708,7 +728,42 @@ export function initEarTraining(){
     markCorrectAnswer(state.currentQuestion);
     updateStats();
     feedbackEl.innerHTML = renderFeedbackMarkup(state.currentQuestion, isCorrect);
+
+    feedbackEl.querySelectorAll('.chord-preview-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const optId = btn.dataset.optionId;
+        playOptionPreview(state.currentQuestion, optId);
+      });
+    });
+
     scheduleNextQuestion();
+  }
+
+  async function playOptionPreview(question, optionId){
+    const { answerMode, root, chordId, voicingFamily, voicingMode, inversion, playbackMode } = question;
+
+    let previewRoot = root;
+    let previewChordId = chordId;
+    let previewVoicingMode = voicingMode;
+
+    if(answerMode === 'root'){
+      previewRoot = optionId;
+    } else if(answerMode === 'inversion'){
+      previewVoicingMode = optionId;
+    } else {
+      previewChordId = optionId;
+    }
+
+    const chord = buildChordNotes(previewRoot, previewChordId, {
+      baseOctave: 3,
+      voicingFamily,
+      voicingMode: previewVoicingMode,
+      randomVoicingIds: state.config.randomVoicingIds,
+      randomFn: Math.random,
+    });
+
+    const events = buildPlaybackEvents(chord.audioNotes, playbackMode);
+    await playPlaybackEvents(events);
   }
 
   function restartIfActive(){
