@@ -1,0 +1,136 @@
+{
+  "source": "dom7s11.png",
+  "family": "altered",
+  "title": "Dominant 7#11",
+  "diagrams": [
+    {
+      "name": "C7#11",
+      "root": "C",
+      "quality": "7s11",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 7,
+      "frets": [
+        8,
+        -1,
+        8,
+        9,
+        7,
+        -1
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "b7",
+        "3",
+        "#11",
+        null
+      ],
+      "mutedStrings": [
+        5,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "C7#11",
+      "root": "C",
+      "quality": "7s11",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 8,
+      "frets": [
+        8,
+        9,
+        8,
+        9,
+        8,
+        -1
+      ],
+      "intervalLabels": [
+        "1",
+        "#11",
+        "b7",
+        "3",
+        "5",
+        null
+      ],
+      "mutedStrings": [
+        1
+      ],
+      "barre": {
+        "fret": 8,
+        "fromString": 2,
+        "toString": 6
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "C13#11",
+      "root": "C",
+      "quality": "13s11",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        2,
+        2,
+        3,
+        2
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "3",
+        "13",
+        "9",
+        "#11"
+      ],
+      "mutedStrings": [
+        6
+      ],
+      "barre": {
+        "fret": 2,
+        "fromString": 1,
+        "toString": 4
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "C7#11",
+      "root": "C",
+      "quality": "7s11",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 3,
+      "frets": [
+        -1,
+        3,
+        4,
+        3,
+        5,
+        3
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "#11",
+        "b7",
+        "3",
+        "5"
+      ],
+      "mutedStrings": [
+        6
+      ],
+      "barre": {
+        "fret": 3,
+        "fromString": 1,
+        "toString": 5
+      },
+      "optionalDots": []
+    }
+  ]
+}

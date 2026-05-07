@@ -1,0 +1,100 @@
+{
+  "source": "minmaj9.png",
+  "family": "extended-min",
+  "title": "Minor/Major 9 Chords",
+  "diagrams": [
+    {
+      "name": "CmMaj9",
+      "root": "C",
+      "quality": "mmaj9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 7,
+      "frets": [
+        8,
+        -1,
+        9,
+        8,
+        8,
+        10
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "7",
+        "b3",
+        "5",
+        "9"
+      ],
+      "mutedStrings": [
+        5
+      ],
+      "barre": {
+        "fret": 8,
+        "fromString": 2,
+        "toString": 6
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "CmMaj9 (rootless)",
+      "root": "C",
+      "quality": "mmaj9",
+      "bassNote": null,
+      "rootless": true,
+      "baseFret": 3,
+      "frets": [
+        -1,
+        6,
+        5,
+        4,
+        3,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "b3",
+        "5",
+        "7",
+        "9",
+        null
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "CmMaj9",
+      "root": "C",
+      "quality": "mmaj9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        1,
+        4,
+        3,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "b3",
+        "7",
+        "9",
+        null
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": {},
+      "optionalDots": []
+    }
+  ]
+}

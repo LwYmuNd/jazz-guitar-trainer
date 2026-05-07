@@ -1,0 +1,224 @@
+{
+  "source": "shell-137-a.png",
+  "family": "shell",
+  "title": "1 3 7 Shell Chords (A-String Root)",
+  "diagrams": [
+    {
+      "name": "Cmaj7",
+      "root": "C",
+      "quality": "maj7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        2,
+        4,
+        -1,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "3",
+        "7",
+        null,
+        null
+      ],
+      "mutedStrings": [
+        6,
+        2,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "C7",
+      "root": "C",
+      "quality": "7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        2,
+        3,
+        -1,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "3",
+        "b7",
+        null,
+        null
+      ],
+      "mutedStrings": [
+        6,
+        2,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Cm7",
+      "root": "C",
+      "quality": "m7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        1,
+        3,
+        -1,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "b3",
+        "b7",
+        null,
+        null
+      ],
+      "mutedStrings": [
+        6,
+        2,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Cm7b5 (=Cm7)",
+      "root": "C",
+      "quality": "m7b5",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        1,
+        3,
+        -1,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "b3",
+        "b7",
+        null,
+        null
+      ],
+      "mutedStrings": [
+        6,
+        2,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "C6",
+      "root": "C",
+      "quality": "maj6",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        2,
+        2,
+        -1,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "3",
+        "6",
+        null,
+        null
+      ],
+      "mutedStrings": [
+        6,
+        2,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Cm6",
+      "root": "C",
+      "quality": "m6",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        1,
+        2,
+        -1,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "b3",
+        "6",
+        null,
+        null
+      ],
+      "mutedStrings": [
+        6,
+        2,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Cdim7 (=Cm6)",
+      "root": "C",
+      "quality": "dim7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        1,
+        2,
+        -1,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "b3",
+        "bb7",
+        null,
+        null
+      ],
+      "mutedStrings": [
+        6,
+        2,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    }
+  ]
+}

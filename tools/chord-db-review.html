@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Chord PNG → JSON 校对</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #0F172A; color: #E2E8F0; }
+  body { display: flex; flex-direction: column; }
+
+  header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px; background: #1E293B; border-bottom: 1px solid #334155;
+  }
+  header h1 { font-size: 14px; margin: 0; color: #F1F5F9; flex: 0 0 auto; }
+  header select, header button {
+    background: #334155; color: #E2E8F0; border: 1px solid #475569;
+    padding: 6px 10px; border-radius: 6px; font-size: 13px; cursor: pointer;
+  }
+  header button:hover, header select:hover { background: #475569; }
+  header button:disabled { opacity: 0.4; cursor: not-allowed; }
+  header .spacer { flex: 1; }
+  header .status {
+    font-size: 12px; padding: 4px 10px; border-radius: 4px;
+    background: #334155;
+  }
+  header .status.dirty { background: #B45309; color: #FEF3C7; }
+  header .status.saved { background: #15803D; color: #DCFCE7; }
+  header .status.error { background: #B91C1C; color: #FEE2E2; }
+
+  main {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; flex: 1;
+    min-height: 0; gap: 1px; background: #334155;
+  }
+  .pane { background: #0F172A; padding: 12px; overflow: auto; min-height: 0; }
+  .pane h2 { margin: 0 0 8px; font-size: 12px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  #png-pane img { width: 100%; height: auto; background: #FFFFFF; border-radius: 6px; }
+
+  #json-pane textarea {
+    width: 100%; height: calc(100% - 28px);
+    background: #1E293B; color: #E2E8F0; border: 1px solid #334155;
+    border-radius: 6px; padding: 10px; font-family: "SF Mono", Menlo, monospace;
+    font-size: 12px; line-height: 1.5; resize: none; outline: none;
+  }
+  #json-pane textarea:focus { border-color: #3B82F6; }
+  #json-error { color: #FCA5A5; font-size: 11px; margin-top: 4px; min-height: 16px; }
+
+  #svg-pane .svg-list { display: grid; gap: 12px; }
+  .svg-card {
+    background: #F8FAFC; padding: 8px; border-radius: 8px; color: #0F172A;
+    font-size: 11px;
+  }
+  .svg-card .name { font-weight: 700; margin-bottom: 4px; font-size: 12px; }
+  .svg-card svg { display: block; width: 100%; max-width: 240px; }
+  .svg-card .meta { color: #64748B; font-size: 10px; margin-top: 4px; }
+  .svg-card.invalid { background: #7F1D1D; color: #FECACA; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Chord PNG 校对</h1>
+  <button id="prev-btn">← 上一张</button>
+  <select id="png-select"></select>
+  <button id="next-btn">下一张 →</button>
+  <span class="spacer"></span>
+  <span id="status" class="status">就绪</span>
+  <button id="reload-btn" title="从草稿重置">从草稿重置</button>
+  <button id="save-btn">保存为已校对</button>
+</header>
+<main>
+  <section class="pane" id="png-pane">
+    <h2>原图 PNG</h2>
+    <img id="png-img" alt="">
+  </section>
+  <section class="pane" id="json-pane">
+    <h2>JSON 编辑（每张 PNG 一个文件）</h2>
+    <textarea id="json-text" spellcheck="false"></textarea>
+    <div id="json-error"></div>
+  </section>
+  <section class="pane" id="svg-pane">
+    <h2>实时 SVG 渲染</h2>
+    <div id="svg-list" class="svg-list"></div>
+  </section>
+</main>
+
+<script type="module">
+import { renderChordDiagramSVG } from '/renderer';
+
+const pngSelect = document.getElementById('png-select');
+const pngImg = document.getElementById('png-img');
+const jsonText = document.getElementById('json-text');
+const jsonError = document.getElementById('json-error');
+const svgList = document.getElementById('svg-list');
+const statusEl = document.getElementById('status');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const saveBtn = document.getElementById('save-btn');
+const reloadBtn = document.getElementById('reload-btn');
+
+let entries = [];
+let currentIndex = -1;
+let dirty = false;
+
+function setStatus(text, kind = '') {
+  statusEl.textContent = text;
+  statusEl.className = 'status' + (kind ? ' ' + kind : '');
+}
+
+function markDirty() {
+  if (!dirty) {
+    dirty = true;
+    setStatus('未保存', 'dirty');
+  }
+}
+
+async function loadList() {
+  const res = await fetch('/list');
+  entries = await res.json();
+  pngSelect.innerHTML = '';
+  for (const e of entries) {
+    const opt = document.createElement('option');
+    const flag = e.reviewedExists ? '✓' : (e.rawExists ? '·' : ' ');
+    opt.value = e.stem;
+    opt.textContent = `${flag} ${e.png}`;
+    pngSelect.appendChild(opt);
+  }
+}
+
+async function loadEntry(index) {
+  if (index < 0 || index >= entries.length) return;
+  if (dirty && !confirm('当前修改未保存，是否丢弃？')) return;
+
+  currentIndex = index;
+  pngSelect.selectedIndex = index;
+  const entry = entries[index];
+
+  pngImg.src = `/chords/${entry.png}`;
+
+  // 优先加载已校对，否则加载草稿
+  let json = null;
+  if (entry.reviewedExists) {
+    const res = await fetch(`/reviewed/${entry.stem}.json`);
+    if (res.ok) json = await res.json();
+  }
+  if (!json && entry.rawExists) {
+    const res = await fetch(`/raw/${entry.stem}.json`);
+    if (res.ok) json = await res.json();
+  }
+  if (!json) {
+    json = { source: entry.png, family: 'unknown', title: '', diagrams: [] };
+  }
+
+  jsonText.value = JSON.stringify(json, null, 2);
+  dirty = false;
+  setStatus(entry.reviewedExists ? '已校对' : '草稿', entry.reviewedExists ? 'saved' : '');
+  renderPreview();
+
+  prevBtn.disabled = index === 0;
+  nextBtn.disabled = index === entries.length - 1;
+}
+
+async function loadFromRaw() {
+  if (currentIndex < 0) return;
+  const entry = entries[currentIndex];
+  if (!entry.rawExists) {
+    alert('该 PNG 没有草稿文件');
+    return;
+  }
+  if (dirty && !confirm('当前修改未保存，是否丢弃并重载草稿？')) return;
+  const res = await fetch(`/raw/${entry.stem}.json`);
+  const json = await res.json();
+  jsonText.value = JSON.stringify(json, null, 2);
+  dirty = false;
+  setStatus('已重载草稿');
+  renderPreview();
+}
+
+function renderPreview() {
+  let parsed;
+  try {
+    parsed = JSON.parse(jsonText.value);
+    jsonError.textContent = '';
+  } catch (err) {
+    jsonError.textContent = `JSON 解析失败: ${err.message}`;
+    return;
+  }
+
+  const diagrams = Array.isArray(parsed.diagrams) ? parsed.diagrams : [];
+  svgList.innerHTML = '';
+  if (diagrams.length === 0) {
+    svgList.innerHTML = '<div class="svg-card invalid">无 diagram</div>';
+    return;
+  }
+
+  for (const d of diagrams) {
+    const card = document.createElement('div');
+    card.className = 'svg-card';
+    try {
+      const svg = renderChordDiagramSVG({
+        title: d.name ?? '?',
+        frets: d.frets ?? [-1, -1, -1, -1, -1, -1],
+        intervalLabels: d.intervalLabels ?? [null, null, null, null, null, null],
+        baseFret: d.baseFret ?? 1,
+        barre: d.barre ?? null,
+        optionalDots: d.optionalDots ?? [],
+        rootless: d.rootless ?? false,
+      });
+      const meta = [
+        d.name,
+        d.bassNote ? `/${d.bassNote}` : '',
+        d.rootless ? ' (rootless)' : '',
+      ].filter(Boolean).join('');
+      card.innerHTML = `
+        <div class="name">${meta}</div>
+        ${svg}
+        <div class="meta">baseFret=${d.baseFret} · frets=[${(d.frets ?? []).join(',')}]</div>
+      `;
+    } catch (err) {
+      card.classList.add('invalid');
+      card.textContent = `渲染失败: ${err.message}`;
+    }
+    svgList.appendChild(card);
+  }
+}
+
+async function save() {
+  if (currentIndex < 0) return;
+  let parsed;
+  try {
+    parsed = JSON.parse(jsonText.value);
+  } catch (err) {
+    setStatus('JSON 无效，未保存', 'error');
+    return;
+  }
+  const entry = entries[currentIndex];
+  const res = await fetch(`/reviewed/${entry.stem}.json`, {
+    method: 'PUT',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(parsed, null, 2) + '\n',
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    setStatus(`保存失败 ${res.status}`, 'error');
+    console.error(text);
+    return;
+  }
+  dirty = false;
+  setStatus('已保存', 'saved');
+
+  // 刷新列表标记
+  await loadList();
+  pngSelect.selectedIndex = currentIndex;
+}
+
+jsonText.addEventListener('input', () => {
+  markDirty();
+  renderPreview();
+});
+
+pngSelect.addEventListener('change', () => {
+  loadEntry(pngSelect.selectedIndex);
+});
+
+prevBtn.addEventListener('click', () => {
+  if (currentIndex > 0) loadEntry(currentIndex - 1);
+});
+
+nextBtn.addEventListener('click', () => {
+  if (currentIndex < entries.length - 1) loadEntry(currentIndex + 1);
+});
+
+saveBtn.addEventListener('click', save);
+reloadBtn.addEventListener('click', loadFromRaw);
+
+window.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 's') {
+    e.preventDefault();
+    save();
+  } else if ((e.metaKey || e.ctrlKey) && e.key === 'ArrowLeft') {
+    e.preventDefault();
+    if (currentIndex > 0) loadEntry(currentIndex - 1);
+  } else if ((e.metaKey || e.ctrlKey) && e.key === 'ArrowRight') {
+    e.preventDefault();
+    if (currentIndex < entries.length - 1) loadEntry(currentIndex + 1);
+  }
+});
+
+await loadList();
+if (entries.length > 0) await loadEntry(0);
+</script>
+</body>
+</html>

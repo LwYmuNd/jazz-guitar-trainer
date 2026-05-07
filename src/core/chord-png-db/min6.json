@@ -1,0 +1,165 @@
+{
+  "source": "min6.png",
+  "family": "extended-min",
+  "title": "Minor 6 Chords",
+  "diagrams": [
+    {
+      "name": "Cm6",
+      "root": "C",
+      "quality": "m6",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 7,
+      "frets": [
+        8,
+        -1,
+        7,
+        8,
+        8,
+        -1
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "6",
+        "b3",
+        "5",
+        null
+      ],
+      "mutedStrings": [
+        5,
+        1
+      ],
+      "barre": {},
+      "optionalDots": []
+    },
+    {
+      "name": "Cm6",
+      "root": "C",
+      "quality": "m6",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 2,
+      "frets": [
+        -1,
+        3,
+        5,
+        2,
+        4,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "5",
+        "6",
+        "b3",
+        null
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": {},
+      "optionalDots": []
+    },
+    {
+      "name": "Cm6",
+      "root": "C",
+      "quality": "m6",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        1,
+        2,
+        1,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "b3",
+        "6",
+        "1",
+        null
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": {
+        "fret": 1,
+        "fromString": 2,
+        "toString": 4
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "Cm6",
+      "root": "C",
+      "quality": "m6",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        -1,
+        2,
+        4,
+        3
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        null,
+        "6",
+        "b3",
+        "5"
+      ],
+      "mutedStrings": [
+        6,
+        4
+      ],
+      "barre": {},
+      "optionalDots": []
+    },
+    {
+      "name": "Cm6",
+      "root": "C",
+      "quality": "m6",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 10,
+      "frets": [
+        -1,
+        -1,
+        10,
+        12,
+        10,
+        11
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "1",
+        "5",
+        "6",
+        "b3"
+      ],
+      "mutedStrings": [
+        6,
+        5
+      ],
+      "barre": {
+        "fret": 10,
+        "fromString": 2,
+        "toString": 4
+      },
+      "optionalDots": []
+    }
+  ]
+}

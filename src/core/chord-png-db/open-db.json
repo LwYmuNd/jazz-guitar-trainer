@@ -1,0 +1,125 @@
+{
+  "source": "open-db.png",
+  "family": "open",
+  "title": "Open Chords With D Root / Open Chords With B Root",
+  "diagrams": [
+    {
+      "name": "Dm(add 9)",
+      "root": "D",
+      "quality": "madd9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 5,
+      "frets": [
+        -1,
+        -1,
+        0,
+        7,
+        6,
+        0
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "1",
+        "1",
+        "b3",
+        "9"
+      ],
+      "mutedStrings": [
+        6,
+        5
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Dm(add 9)",
+      "root": "D",
+      "quality": "madd9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 7,
+      "frets": [
+        -1,
+        -1,
+        0,
+        10,
+        10,
+        0
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "1",
+        "b3",
+        "5",
+        "9"
+      ],
+      "mutedStrings": [
+        6,
+        5
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Bm11(b6) = Gmaj7(add 6)/B",
+      "root": "B",
+      "quality": "m11b6",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        2,
+        4,
+        0,
+        3,
+        0
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "5",
+        "b6",
+        "b3",
+        "11"
+      ],
+      "mutedStrings": [
+        6
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Bm7b5(add 11)",
+      "root": "B",
+      "quality": "m7b5add11",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        2,
+        3,
+        2,
+        3,
+        0
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "b5",
+        "b7",
+        "#9",
+        "11"
+      ],
+      "mutedStrings": [
+        6
+      ],
+      "barre": null,
+      "optionalDots": []
+    }
+  ]
+}

@@ -840,7 +840,16 @@ function buildDynamicDiagrams(root, chordId, voicingFamily, inversion, midiNotes
   if(!fallbackCandidates.length) return [];
 
   return fallbackCandidates.slice(0, 3).map(candidate => {
-    const positiveFrets = candidate.frets.filter(fret => fret > 0);
+    // 将4弦数据转换为6弦格式（从低到高，0=6弦，5=1弦），-1表示静音
+    // candidate.set.strings 是从高到低的索引（0=1弦），candidate.frets 对应顺序
+    const fullFrets = [-1, -1, -1, -1, -1, -1];
+    const fullIntervalLabels = [null, null, null, null, null, null];
+    candidate.set.strings.forEach((stringIndex, i) => {
+      fullFrets[5 - stringIndex] = candidate.frets[i];
+      fullIntervalLabels[5 - stringIndex] = intervalLabelsTopDown[i] ?? null;
+    });
+
+    const positiveFrets = fullFrets.filter(fret => fret > 0);
     const minPositiveFret = positiveFrets.length ? Math.min(...positiveFrets) : 1;
     const maxPositiveFret = positiveFrets.length ? Math.max(...positiveFrets) : 1;
     const baseFret = maxPositiveFret <= 4 ? 1 : minPositiveFret;
@@ -849,12 +858,10 @@ function buildDynamicDiagrams(root, chordId, voicingFamily, inversion, midiNotes
       kind: 'dynamic',
       title: `${formatRootLabel(root)}${getChordDefinition(chordId).answerLabel} · ${getVoicingFamilyLabel(voicingFamily)} · ${getInversionLabel(inversion)}`,
       caption: `Current root-transposed shape on ${candidate.set.label}.`,
-      strings: candidate.set.strings.map(stringIndex => stringIndex + 1),
       stringSetLabel: candidate.set.label,
-      frets: [...candidate.frets],
-      intervalLabels: [...intervalLabelsTopDown],
+      frets: fullFrets,
+      intervalLabels: fullIntervalLabels,
       baseFret,
-      mutedStrings: [1, 2, 3, 4, 5, 6].filter(stringNumber => !candidate.set.strings.includes(stringNumber - 1)),
     };
   });
 }

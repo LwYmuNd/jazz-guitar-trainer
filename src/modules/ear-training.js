@@ -1,3 +1,4 @@
+import { renderChordDiagramSVG } from '../core/chord-diagram-renderer.js';
 import { createCustomSelect } from '../components/custom-select.js';
 import { playPlaybackEvents } from '../core/audio-engine.js';
 import {
@@ -115,77 +116,11 @@ function renderQuestionPrompt(questionNumber, playbackMode, voicingFamily, voici
   `;
 }
 
-function renderDynamicDiagramSVG(diagram){
-  const width = 260;
-  const height = 228;
-  const marginLeft = 34;
-  const marginTop = 34;
-  const stringGap = 34;
-  const fretGap = 30;
-  const boardWidth = stringGap * 5;
-  const boardHeight = fretGap * 4;
-  const topY = marginTop;
-  const stringNumbers = [6, 5, 4, 3, 2, 1];
-
-  const markerMap = new Map(
-    diagram.strings.map((stringNumber, index) => [stringNumber, {
-      fret: diagram.frets[index],
-      intervalLabel: diagram.intervalLabels?.[index] ?? '',
-    }]),
-  );
-
-  let svg = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${diagram.title}">`;
-  svg += `<rect width="${width}" height="${height}" rx="18" fill="#F8FAFC"/>`;
-
-  for(let index = 0; index < stringNumbers.length; index += 1){
-    const x = marginLeft + (index * stringGap);
-    svg += `<line x1="${x}" y1="${topY}" x2="${x}" y2="${topY + boardHeight}" stroke="#64748B" stroke-width="1.6"/>`;
-    svg += `<text x="${x}" y="${topY - 12}" fill="#64748B" font-size="11" font-weight="600" text-anchor="middle">${stringNumbers[index]}</text>`;
-  }
-
-  for(let fret = 0; fret <= 4; fret += 1){
-    const y = topY + (fret * fretGap);
-    const stroke = fret === 0 && diagram.baseFret === 1 ? '#0F172A' : '#CBD5E1';
-    const strokeWidth = fret === 0 && diagram.baseFret === 1 ? 3 : 1.6;
-    svg += `<line x1="${marginLeft}" y1="${y}" x2="${marginLeft + boardWidth}" y2="${y}" stroke="${stroke}" stroke-width="${strokeWidth}"/>`;
-  }
-
-  for(let fret = 1; fret <= 4; fret += 1){
-    const fretNumber = diagram.baseFret === 1 ? fret : (diagram.baseFret + fret - 1);
-    const y = topY + ((fret - 0.5) * fretGap) + 4;
-    svg += `<text x="16" y="${y}" fill="#64748B" font-size="10" font-weight="700" text-anchor="middle">${fretNumber}</text>`;
-  }
-
-  stringNumbers.forEach((stringNumber, index) => {
-    const x = marginLeft + (index * stringGap);
-    if(diagram.mutedStrings.includes(stringNumber)){
-      svg += `<text x="${x}" y="${topY - 12}" fill="#94A3B8" font-size="12" font-weight="700" text-anchor="middle">X</text>`;
-      return;
-    }
-
-    const marker = markerMap.get(stringNumber);
-    const fret = marker?.fret;
-    if(fret === 0){
-      svg += `<text x="${x}" y="${topY - 12}" fill="#16A34A" font-size="12" font-weight="700" text-anchor="middle">O</text>`;
-      return;
-    }
-
-    if(typeof fret !== 'number' || fret < 0) return;
-    const relativeFret = diagram.baseFret === 1 ? fret : (fret - diagram.baseFret + 1);
-    const y = topY + ((relativeFret - 0.5) * fretGap);
-    svg += `<circle cx="${x}" cy="${y}" r="11" fill="#7C3AED"/>`;
-    svg += `<text x="${x}" y="${y + 4}" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">${marker.intervalLabel}</text>`;
-  });
-
-  svg += `</svg>`;
-  return svg;
-}
-
 function renderDiagramFigure(diagram){
   const bodyMarkup = diagram.kind === 'dynamic'
     ? `
       <div class="ear-diagram-image-wrap is-dynamic">
-        ${renderDynamicDiagramSVG(diagram)}
+        ${renderChordDiagramSVG(diagram)}
       </div>
     `
     : `

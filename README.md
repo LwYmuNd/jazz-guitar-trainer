@@ -24,8 +24,26 @@ npm run preview
 - `指板`：查看音名在指板上的位置。
 - `音名 / 级数`：基础音高与级数识别训练。
 - `和弦图`：查看当前项目内置的和弦图与排列。
+- `和弦字典`：按 voicing family 与 chord quality 浏览的爵士和弦字典，覆盖 basic / shell / extended-maj / extended-dom / sus / extended-min / altered / drop2 / drop3 / open 共 9 类 family，支持 family → quality 联动筛选。
 - `和弦练耳`：面向爵士和声颜色听辨的训练模块，支持封闭、Drop 2、Drop 3 voicing。
 - `音程练耳`：基础音程距离感与和声色彩训练，支持旋律/和声音程、上行/下行/随机方向。
+
+## 和弦字典
+
+`和弦字典` 模块按 voicing family 与 chord quality 两个维度浏览爵士和弦指型，图形从项目内自有 JSON 数据库动态渲染：
+
+- **数据源**：位于 `src/core/chord-png-db/*.json`，每张原始教学图对应一个 JSON 文件，共 44 个文件（229 个 diagrams），覆盖 9 类 family
+- **运行时**：`src/core/chord-png-database.js` 用 Vite 的 `import.meta.glob` 在构建时聚合所有 JSON，向 UI 暴露 `getFamilies / getQualitiesByFamily / getDiagrams`
+- **筛选维度**：voicing family（9 类）→ chord quality（按 family 动态收缩），SVG 渲染器支持 barre 弧线、灰色参考音 (`optionalDots`)、`rootless` 标识
+- **显示层**：升降号统一为 ASCII（`Db`、`7#9`、`m7b5`）
+- **数据扩展**：可自行按照 JSON schema 添加新的和弦图表，只需将新的 JSON 文件放入 `src/core/chord-png-db/` 目录即可
+- **校对工具**：`node tools/chord-db-review-server.mjs` 启动本地服务器，可用于校对或编辑和弦数据
+
+说明：
+
+- 旧的 `和弦图表` 模块仍然保留，用于静态 PNG 参考图浏览。
+- 渲染器 `src/core/chord-diagram-renderer.js` 由和弦字典与练耳模块共用。
+- 练耳模块的 voicing 反馈仍由 `chord-voicings.js` + `chord-ear-training.js` 驱动，与和弦字典数据源相互独立。
 
 ## 和弦练耳现状
 

@@ -1,0 +1,106 @@
+{
+  "source": "sus4-13.png",
+  "family": "sus",
+  "title": "13 Sus 4 Chords",
+  "diagrams": [
+    {
+      "name": "C13sus4",
+      "root": "C",
+      "quality": "sus413",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 8,
+      "frets": [
+        8,
+        -1,
+        8,
+        10,
+        10,
+        8
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "b7",
+        "4",
+        "13",
+        "1"
+      ],
+      "mutedStrings": [
+        5
+      ],
+      "barre": {
+        "fret": 8,
+        "fromString": 1,
+        "toString": 6
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "C13sus4",
+      "root": "C",
+      "quality": "sus413",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 8,
+      "frets": [
+        8,
+        -1,
+        8,
+        10,
+        10,
+        10
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "b7",
+        "4",
+        "13",
+        "9"
+      ],
+      "mutedStrings": [
+        5
+      ],
+      "barre": {
+        "fret": 10,
+        "fromString": 1,
+        "toString": 3
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "C13sus4",
+      "root": "C",
+      "quality": "sus413",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 3,
+      "frets": [
+        -1,
+        3,
+        3,
+        3,
+        3,
+        5
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "4",
+        "b7",
+        "9",
+        "13"
+      ],
+      "mutedStrings": [
+        6
+      ],
+      "barre": {
+        "fret": 3,
+        "fromString": 2,
+        "toString": 5
+      },
+      "optionalDots": []
+    }
+  ]
+}

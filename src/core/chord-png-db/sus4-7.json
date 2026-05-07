@@ -1,0 +1,105 @@
+{
+  "source": "sus4-7.png",
+  "family": "sus",
+  "title": "7 Sus 4 Chords",
+  "diagrams": [
+    {
+      "name": "C7sus4",
+      "root": "C",
+      "quality": "sus47",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 3,
+      "frets": [
+        -1,
+        3,
+        5,
+        3,
+        6,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "5",
+        "b7",
+        "4",
+        null
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": {
+        "fret": 3,
+        "fromString": 3,
+        "toString": 5
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "C7sus4",
+      "root": "C",
+      "quality": "sus47",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 8,
+      "frets": [
+        8,
+        -1,
+        8,
+        10,
+        8,
+        -1
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "b7",
+        "4",
+        "5",
+        null
+      ],
+      "mutedStrings": [
+        5,
+        1
+      ],
+      "barre": {
+        "fret": 8,
+        "fromString": 2,
+        "toString": 6
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "C7sus4",
+      "root": "C",
+      "quality": "sus47",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 10,
+      "frets": [
+        -1,
+        -1,
+        10,
+        12,
+        11,
+        13
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "1",
+        "5",
+        "b7",
+        "4"
+      ],
+      "mutedStrings": [
+        6,
+        5
+      ],
+      "barre": null,
+      "optionalDots": []
+    }
+  ]
+}

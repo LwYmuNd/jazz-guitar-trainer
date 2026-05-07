@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 项目概述
 
-Jazz Guitar Trainer 是一个面向现代爵士吉他练习的静态 Web 应用，包含指板可视化、音名/级数训练、和弦图查看、和弦练耳以及音程练耳模块。
+Jazz Guitar Trainer 是一个面向现代爵士吉他练习的静态 Web 应用，包含指板可视化、音名/级数训练、和弦图查看、和弦字典、和弦练耳以及音程练耳模块。
 
 在线地址：https://lwymund.github.io/jazz-guitar-trainer
 
@@ -45,12 +45,16 @@ src/
 │   ├── music-theory.js       # 音乐理论基础（音符、音阶、调式）
 │   ├── chord-ear-training.js # 和弦练耳题库生成与规则
 │   ├── interval-ear-training.js # 音程练耳题库生成与规则
-│   ├── chord-voicings.js     # Drop2/Drop3 voicing 数据库
+│   ├── chord-png-database.js  # 和弦字典运行时查询层（聚合 chord-png-db/*.json）
+│   ├── chord-png-db/          # PNG 解析校对后的和弦数据（每张原图一个 JSON）
+│   ├── chord-diagram-renderer.js # 共享 SVG 和弦图渲染器（支持 barre / optionalDots / rootless）
+│   ├── chord-voicings.js     # Drop2/Drop3 voicing 数据库（仅练耳模块使用）
 │   └── audio-engine.js       # Tone.js 音频播放封装
 ├── modules/             # UI 模块（对应页面中的各个功能区）
 │   ├── note-degree.js        # 音名/级数训练模块
 │   ├── fretboard.js          # 指板可视化模块
-│   ├── chord-diagrams.js     # 和弦图查看模块
+│   ├── chord-diagrams.js     # 静态和弦图查看模块
+│   ├── chord-library.js      # 和弦字典模块
 │   ├── ear-training.js       # 和弦练耳 UI 与交互
 │   └── interval-training.js  # 音程练耳 UI 与交互
 ├── components/          # 可复用 UI 组件
@@ -84,7 +88,17 @@ src/
    - 根据当前 root、voicing family、inversion 生成多组可替代的弦集按法
    - 圆点显示相对音程，左侧显示 fret 编号
 
-5. **音程练耳核心逻辑**
+5. **和弦字典（PNG 解析数据库路线）**
+   - 数据来源：`public/chords/*.png` 中的 44 张教学和弦图（quartal 暂不收入）
+   - 数据生成：PNG 已通过多模态识别 + 人工校对转换为结构化 JSON，存放在 `src/core/chord-png-db/<source>.json`（44 个文件，229 个 diagrams）
+   - 校对工具：`node tools/chord-db-review-server.mjs` 启动本地服务器，浏览器打开后可逐张比对 PNG 与 SVG 渲染并修正 JSON
+   - 运行时聚合：`src/core/chord-png-database.js` 用 Vite 的 `import.meta.glob` 在构建时收集所有校对后的 JSON
+   - 查询 API：`getFamilies / getQualitiesByFamily / getDiagrams`，支持 9 类 family（basic / shell / extended-maj / extended-dom / sus / extended-min / altered / drop2 / drop3 / open）
+   - 显示层统一 ASCII 升降号（`Db`、`7#9`、`m7b5`）
+   - `src/core/chord-diagram-renderer.js` 为和弦字典与练耳模块共享 SVG 指板渲染器，支持 `barre` 弧线、`optionalDots` 灰色参考音、`rootless` 标识
+   - 注意：`chord-voicings.js` 与 `chord-ear-training.js` 仅服务于练耳模块的 voicing 反馈，不再供和弦字典使用；`jazz-voicing-library.js` 已删除
+
+6. **音程练耳核心逻辑**
    - `interval-ear-training.js` 包含 12 个基础音程定义（m2 到 P8）
    - 支持旋律音程（先后播放）与和声音程（同时播放）两种题型
    - 支持上行/下行/随机方向、固定根音/随机根音（可限定范围）

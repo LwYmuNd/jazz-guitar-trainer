@@ -1,0 +1,135 @@
+{
+  "source": "dim7.png",
+  "family": "basic",
+  "title": "Diminished 7 Chords",
+  "diagrams": [
+    {
+      "name": "Cdim7",
+      "root": "C",
+      "quality": "dim7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 7,
+      "frets": [
+        8,
+        -1,
+        7,
+        8,
+        7,
+        -1
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "bb7",
+        "b3",
+        "b5",
+        null
+      ],
+      "mutedStrings": [
+        1,
+        5
+      ],
+      "barre": {
+        "fret": 7,
+        "fromString": 2,
+        "toString": 4
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "Cdim7",
+      "root": "C",
+      "quality": "dim7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 2,
+      "frets": [
+        -1,
+        3,
+        4,
+        2,
+        4,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "b5",
+        "bb7",
+        "b3",
+        null
+      ],
+      "mutedStrings": [
+        1,
+        6
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Cdim7",
+      "root": "C",
+      "quality": "dim7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        -1,
+        2,
+        4,
+        2
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "b5",
+        "bb7",
+        "b3",
+        "b5"
+      ],
+      "mutedStrings": [
+        4,
+        6
+      ],
+      "barre": {
+        "fret": 2,
+        "fromString": 1,
+        "toString": 3
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "Cdim7",
+      "root": "C",
+      "quality": "dim7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 10,
+      "frets": [
+        -1,
+        -1,
+        10,
+        11,
+        10,
+        11
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "1",
+        "b5",
+        "bb7",
+        "b3"
+      ],
+      "mutedStrings": [
+        5,
+        6
+      ],
+      "barre": null,
+      "optionalDots": []
+    }
+  ]
+}

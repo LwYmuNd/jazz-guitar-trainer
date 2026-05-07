@@ -1,0 +1,140 @@
+{
+  "source": "dom13b9-s9.png",
+  "family": "altered",
+  "title": "Dominant 13b9 / Dominant 13#9",
+  "diagrams": [
+    {
+      "name": "C13b9",
+      "root": "C",
+      "quality": "13b9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 7,
+      "frets": [
+        8,
+        -1,
+        8,
+        9,
+        10,
+        9
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "b7",
+        "3",
+        "13",
+        "b9"
+      ],
+      "mutedStrings": [
+        5
+      ],
+      "barre": {
+        "fret": 8,
+        "fromString": 4,
+        "toString": 6
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "C13b9",
+      "root": "C",
+      "quality": "13b9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 5,
+      "frets": [
+        8,
+        -1,
+        8,
+        6,
+        5,
+        5
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "b7",
+        "b9",
+        "3",
+        "13"
+      ],
+      "mutedStrings": [
+        5
+      ],
+      "barre": {
+        "fret": 5,
+        "fromString": 1,
+        "toString": 2
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "C13b9 (rootless)",
+      "root": "C",
+      "quality": "13b9",
+      "bassNote": null,
+      "rootless": true,
+      "baseFret": 2,
+      "frets": [
+        -1,
+        -1,
+        2,
+        3,
+        2,
+        5
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "3",
+        "b7",
+        "b9",
+        "13"
+      ],
+      "mutedStrings": [
+        6,
+        5
+      ],
+      "barre": {
+        "fret": 2,
+        "fromString": 2,
+        "toString": 4
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "C13#9",
+      "root": "C",
+      "quality": "13s9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 8,
+      "frets": [
+        8,
+        -1,
+        8,
+        9,
+        10,
+        11
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "b7",
+        "3",
+        "13",
+        "#9"
+      ],
+      "mutedStrings": [
+        5
+      ],
+      "barre": {
+        "fret": 8,
+        "fromString": 4,
+        "toString": 6
+      },
+      "optionalDots": []
+    }
+  ]
+}

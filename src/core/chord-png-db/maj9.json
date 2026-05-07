@@ -1,0 +1,197 @@
+{
+  "source": "maj9.png",
+  "family": "extended-maj",
+  "title": "Major 9 Chords",
+  "diagrams": [
+    {
+      "name": "Cmaj9",
+      "root": "C",
+      "quality": "maj9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 7,
+      "frets": [
+        8,
+        -1,
+        9,
+        9,
+        8,
+        10
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "7",
+        "3",
+        "5",
+        "9"
+      ],
+      "mutedStrings": [
+        5
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Cmaj9",
+      "root": "C",
+      "quality": "maj9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 7,
+      "frets": [
+        8,
+        7,
+        9,
+        7,
+        -1,
+        -1
+      ],
+      "intervalLabels": [
+        "1",
+        "3",
+        "7",
+        "9",
+        null,
+        null
+      ],
+      "mutedStrings": [
+        2,
+        1
+      ],
+      "barre": {
+        "fret": 7,
+        "fromString": 3,
+        "toString": 5
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "Cmaj9",
+      "root": "C",
+      "quality": "maj9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        2,
+        4,
+        3,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "3",
+        "7",
+        "9",
+        null
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": {},
+      "optionalDots": []
+    },
+    {
+      "name": "Cmaj9 (omit 3)",
+      "root": "C",
+      "quality": "maj9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 7,
+      "frets": [
+        8,
+        -1,
+        9,
+        7,
+        8,
+        -1
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "7",
+        "9",
+        "5",
+        null
+      ],
+      "mutedStrings": [
+        5,
+        1
+      ],
+      "barre": {},
+      "optionalDots": []
+    },
+    {
+      "name": "Cmaj9 (omit 3)",
+      "root": "C",
+      "quality": "maj9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 3,
+      "frets": [
+        -1,
+        3,
+        5,
+        4,
+        3,
+        3
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "5",
+        "7",
+        "9",
+        "5"
+      ],
+      "mutedStrings": [
+        6
+      ],
+      "barre": {
+        "fret": 3,
+        "fromString": 1,
+        "toString": 5
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "Cmaj9 (omit 3)",
+      "root": "C",
+      "quality": "maj9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 10,
+      "frets": [
+        -1,
+        -1,
+        10,
+        12,
+        12,
+        10
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "1",
+        "5",
+        "7",
+        "9"
+      ],
+      "mutedStrings": [
+        6,
+        5
+      ],
+      "barre": {
+        "fret": 10,
+        "fromString": 1,
+        "toString": 4
+      },
+      "optionalDots": []
+    }
+  ]
+}

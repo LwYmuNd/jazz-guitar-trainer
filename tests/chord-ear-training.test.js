@@ -215,8 +215,10 @@ test('createQuestion also renders close voicings as dynamic fretboard metadata',
   assert.equal(question.diagram.title, 'Cmaj13 · 封闭 · 原位');
   assert.ok(Array.isArray(question.diagrams));
   assert.equal(question.diagrams.length, 2);
-  assert.deepEqual(question.diagram.strings, [1, 2, 3, 4, 5]);
-  assert.deepEqual(question.diagram.intervalLabels, ['13', '7', '5', '3', '1']);
+  // 新格式：6弦数组，从低到高（index 0=6弦），-1表示静音
+  assert.deepEqual(question.diagram.frets.length, 6);
+  assert.equal(question.diagram.frets[0], -1); // 6弦静音
+  assert.deepEqual(question.diagram.intervalLabels, [null, '1', '3', '5', '7', '13']);
 });
 
 test('createQuestion includes dynamic fretboard metadata for supported drop voicings', () => {
@@ -236,9 +238,10 @@ test('createQuestion includes dynamic fretboard metadata for supported drop voic
   assert.equal(question.diagram.kind, 'dynamic');
   assert.equal(question.diagram.title, 'Cmaj7 · Drop 2 · 一转位');
   assert.equal(question.diagram.baseFret, 1);
-  assert.deepEqual(question.diagram.strings, [2, 3, 4, 5]);
-  assert.deepEqual(question.diagram.frets, [1, 0, 2, 2]);
-  assert.deepEqual(question.diagram.intervalLabels, ['1', '5', '3', '7']);
+  // 新格式：6弦数组，从低到高（index 0=6弦），-1表示静音
+  // strings=[1,2,3,4]（0-based: 2弦,3弦,4弦,5弦）→ fullFrets[4]=1, [3]=0, [2]=2, [1]=2
+  assert.deepEqual(question.diagram.frets, [-1, 2, 2, 0, 1, -1]);
+  assert.deepEqual(question.diagram.intervalLabels, [null, '7', '3', '5', '1', null]);
   assert.equal(question.diagrams.length, 3);
 });
 
@@ -257,8 +260,9 @@ test('createQuestion transposes dynamic fretboard metadata with the current root
 
   assert.equal(question.diagram.kind, 'dynamic');
   assert.equal(question.diagram.title, 'D7 · Drop 3 · 原位');
-  assert.deepEqual(question.diagram.strings, [3, 4, 5, 6]);
-  assert.deepEqual(question.diagram.frets, [5, 7, 5, 2]);
+  // 新格式：6弦数组，从低到高（index 0=6弦），-1表示静音
+  // strings=[2,3,4,5]（0-based: 3弦,4弦,5弦,6弦）→ fullFrets[3]=5, [2]=7, [1]=5, [0]=2
+  assert.deepEqual(question.diagram.frets, [2, 5, 7, 5, -1, -1]);
 });
 
 test('createQuestion switches to root answers when only one chord is left and root is random', () => {

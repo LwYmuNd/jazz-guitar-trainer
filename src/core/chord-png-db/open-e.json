@@ -1,0 +1,92 @@
+{
+  "source": "open-e.png",
+  "family": "open",
+  "title": "Open Chords With E Root",
+  "diagrams": [
+    {
+      "name": "Emaj9",
+      "root": "E",
+      "quality": "maj9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        0,
+        -1,
+        4,
+        1,
+        4,
+        0
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "9",
+        "3",
+        "7",
+        "1"
+      ],
+      "mutedStrings": [
+        5
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Em9",
+      "root": "E",
+      "quality": "m9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 4,
+      "frets": [
+        0,
+        7,
+        4,
+        0,
+        0,
+        0
+      ],
+      "intervalLabels": [
+        "1",
+        "1",
+        "9",
+        "b3",
+        "5",
+        "1"
+      ],
+      "mutedStrings": [],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Em9",
+      "root": "E",
+      "quality": "m9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        0,
+        -1,
+        4,
+        0,
+        3,
+        0
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "9",
+        "b3",
+        "b7",
+        "1"
+      ],
+      "mutedStrings": [
+        5
+      ],
+      "barre": null,
+      "optionalDots": []
+    }
+  ]
+}

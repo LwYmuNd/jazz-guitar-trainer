@@ -1,0 +1,167 @@
+{
+  "source": "minmaj7.png",
+  "family": "extended-min",
+  "title": "Minor/Major 7 Chords",
+  "diagrams": [
+    {
+      "name": "CmMaj7",
+      "root": "C",
+      "quality": "mmaj7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 7,
+      "frets": [
+        8,
+        10,
+        9,
+        8,
+        8,
+        -1
+      ],
+      "intervalLabels": [
+        "1",
+        "5",
+        "7",
+        "b3",
+        "5",
+        null
+      ],
+      "mutedStrings": [
+        1
+      ],
+      "barre": {
+        "fret": 8,
+        "fromString": 2,
+        "toString": 6
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "CmMaj7",
+      "root": "C",
+      "quality": "mmaj7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 3,
+      "frets": [
+        -1,
+        3,
+        5,
+        4,
+        4,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "5",
+        "7",
+        "b3",
+        null
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "CmMaj7",
+      "root": "C",
+      "quality": "mmaj7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 3,
+      "frets": [
+        -1,
+        3,
+        5,
+        4,
+        4,
+        3
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "5",
+        "7",
+        "b3",
+        "5"
+      ],
+      "mutedStrings": [
+        6
+      ],
+      "barre": {
+        "fret": 3,
+        "fromString": 1,
+        "toString": 5
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "CmMaj7",
+      "root": "C",
+      "quality": "mmaj7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 12,
+      "frets": [
+        -1,
+        15,
+        13,
+        12,
+        12,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "b3",
+        "7",
+        "5",
+        null
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": {
+        "fret": 12,
+        "fromString": 2,
+        "toString": 3
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "CmMaj7",
+      "root": "C",
+      "quality": "mmaj7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 10,
+      "frets": [
+        -1,
+        -1,
+        10,
+        12,
+        12,
+        11
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "1",
+        "5",
+        "7",
+        "b3"
+      ],
+      "mutedStrings": [
+        6,
+        5
+      ],
+      "barre": null,
+      "optionalDots": []
+    }
+  ]
+}

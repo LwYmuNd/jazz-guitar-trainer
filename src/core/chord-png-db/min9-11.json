@@ -1,0 +1,202 @@
+{
+  "source": "min9-11.png",
+  "family": "extended-min",
+  "title": "Minor 9 Chords / Minor 11 Chords",
+  "diagrams": [
+    {
+      "name": "Cm9",
+      "root": "C",
+      "quality": "m9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 7,
+      "frets": [
+        8,
+        -1,
+        8,
+        8,
+        8,
+        10
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "b7",
+        "b3",
+        "5",
+        "9"
+      ],
+      "mutedStrings": [
+        5
+      ],
+      "barre": {
+        "fret": 8,
+        "fromString": 2,
+        "toString": 4
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "Cm9",
+      "root": "C",
+      "quality": "m9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        1,
+        3,
+        3,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "b3",
+        "b7",
+        "9",
+        null
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": {},
+      "optionalDots": []
+    },
+    {
+      "name": "Cm9",
+      "root": "C",
+      "quality": "m9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 8,
+      "frets": [
+        -1,
+        -1,
+        10,
+        8,
+        11,
+        10
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "1",
+        "b3",
+        "b7",
+        "9"
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": {
+        "fret": 3,
+        "fromString": 2,
+        "toString": 5
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "Cm11",
+      "root": "C",
+      "quality": "m11",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 5,
+      "frets": [
+        8,
+        -1,
+        8,
+        8,
+        6,
+        -1
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "b7",
+        "b3",
+        "11",
+        null
+      ],
+      "mutedStrings": [
+        5,
+        1
+      ],
+      "barre": {
+        "fret": 3,
+        "fromString": 2,
+        "toString": 4
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "Cm11",
+      "root": "C",
+      "quality": "m11",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        -1,
+        3,
+        4,
+        1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        null,
+        "b7",
+        "b3",
+        "11"
+      ],
+      "mutedStrings": [
+        6,
+        4
+      ],
+      "barre": {},
+      "optionalDots": []
+    },
+    {
+      "name": "Cm11 (rootless)",
+      "root": "C",
+      "quality": "m11",
+      "bassNote": null,
+      "rootless": true,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        -1,
+        1,
+        3,
+        3,
+        1
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "b3",
+        "b7",
+        "9",
+        "11"
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": {
+        "fret": 1,
+        "fromString": 1,
+        "toString": 4
+      },
+      "optionalDots": []
+    }
+  ]
+}

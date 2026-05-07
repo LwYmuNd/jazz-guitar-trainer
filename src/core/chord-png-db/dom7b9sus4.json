@@ -1,0 +1,107 @@
+{
+  "source": "dom7b9sus4.png",
+  "family": "altered",
+  "title": "Dominant 7b9 Sus 4",
+  "diagrams": [
+    {
+      "name": "C7sus4 (b9)",
+      "root": "C",
+      "quality": "7b9sus4",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 5,
+      "frets": [
+        8,
+        -1,
+        8,
+        6,
+        6,
+        -1
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "b7",
+        "b9",
+        "4",
+        null
+      ],
+      "mutedStrings": [
+        5,
+        1
+      ],
+      "barre": {
+        "fret": 6,
+        "fromString": 2,
+        "toString": 3
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "C13sus4 (b9)",
+      "root": "C",
+      "quality": "13sus4b9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 8,
+      "frets": [
+        8,
+        -1,
+        11,
+        10,
+        10,
+        8
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "b9",
+        "4",
+        "13",
+        "1"
+      ],
+      "mutedStrings": [
+        5
+      ],
+      "barre": {
+        "fret": 8,
+        "fromString": 1,
+        "toString": 6
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "C7sus4 (b9,b13)",
+      "root": "C",
+      "quality": "7b9sus4b13",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 8,
+      "frets": [
+        8,
+        -1,
+        11,
+        10,
+        9,
+        8
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "b9",
+        "4",
+        "b13",
+        "1"
+      ],
+      "mutedStrings": [
+        5
+      ],
+      "barre": {
+        "fret": 8,
+        "fromString": 1,
+        "toString": 6
+      },
+      "optionalDots": []
+    }
+  ]
+}

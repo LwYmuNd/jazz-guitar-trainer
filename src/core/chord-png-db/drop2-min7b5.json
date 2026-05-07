@@ -1,0 +1,255 @@
+{
+  "source": "drop2-min7b5.png",
+  "family": "drop2",
+  "title": "Minor 7b5 Inversions (Drop 2) - A-String Bass Note / Minor 7b5 Inversions (Drop 2) - D-String Bass Note",
+  "diagrams": [
+    {
+      "name": "Cm7b5",
+      "root": "C",
+      "quality": "m7b5",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 3,
+      "frets": [
+        -1,
+        3,
+        4,
+        3,
+        4,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "b5",
+        "b7",
+        "b3",
+        null
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Cm7b5/Eb",
+      "root": "C",
+      "quality": "m7b5",
+      "bassNote": "Eb",
+      "rootless": false,
+      "baseFret": 5,
+      "frets": [
+        -1,
+        6,
+        8,
+        5,
+        7,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "b3",
+        "b7",
+        "1",
+        "b5",
+        null
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Cm7b5/Gb",
+      "root": "C",
+      "quality": "m7b5",
+      "bassNote": "Gb",
+      "rootless": false,
+      "baseFret": 8,
+      "frets": [
+        -1,
+        9,
+        10,
+        8,
+        11,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "b5",
+        "1",
+        "b3",
+        "b7",
+        null
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Cm7b5/Bb",
+      "root": "C",
+      "quality": "m7b5",
+      "bassNote": "Bb",
+      "rootless": false,
+      "baseFret": 10,
+      "frets": [
+        -1,
+        13,
+        13,
+        11,
+        13,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "b7",
+        "b3",
+        "b5",
+        "1",
+        null
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Cm7b5",
+      "root": "C",
+      "quality": "m7b5",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 10,
+      "frets": [
+        -1,
+        -1,
+        10,
+        11,
+        11,
+        11
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "1",
+        "b5",
+        "b7",
+        "b3"
+      ],
+      "mutedStrings": [
+        6,
+        5
+      ],
+      "barre": {
+        "fret": 11,
+        "fromString": 1,
+        "toString": 3
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "Cm7b5/Eb",
+      "root": "C",
+      "quality": "m7b5",
+      "bassNote": "Eb",
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        -1,
+        1,
+        3,
+        1,
+        2
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "b3",
+        "b7",
+        "1",
+        "b5"
+      ],
+      "mutedStrings": [
+        6,
+        5
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Cm7b5/Gb",
+      "root": "C",
+      "quality": "m7b5",
+      "bassNote": "Gb",
+      "rootless": false,
+      "baseFret": 3,
+      "frets": [
+        -1,
+        -1,
+        4,
+        5,
+        4,
+        6
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "b5",
+        "1",
+        "b3",
+        "b7"
+      ],
+      "mutedStrings": [
+        6,
+        5
+      ],
+      "barre": {
+        "fret": 4,
+        "fromString": 2,
+        "toString": 4
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "Cm7b5/Bb",
+      "root": "C",
+      "quality": "m7b5",
+      "bassNote": "Bb",
+      "rootless": false,
+      "baseFret": 7,
+      "frets": [
+        -1,
+        -1,
+        8,
+        8,
+        7,
+        8
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "b7",
+        "b3",
+        "b5",
+        "1"
+      ],
+      "mutedStrings": [
+        6,
+        5
+      ],
+      "barre": null,
+      "optionalDots": []
+    }
+  ]
+}

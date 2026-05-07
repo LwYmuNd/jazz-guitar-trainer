@@ -1,0 +1,168 @@
+{
+  "source": "sus4-9.png",
+  "family": "sus",
+  "title": "9 Sus 4 Chords",
+  "diagrams": [
+    {
+      "name": "C9sus4",
+      "root": "C",
+      "quality": "sus49",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 5,
+      "frets": [
+        8,
+        -1,
+        8,
+        7,
+        6,
+        -1
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "b7",
+        "9",
+        "4",
+        null
+      ],
+      "mutedStrings": [
+        5,
+        1
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "C9sus4",
+      "root": "C",
+      "quality": "sus49",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        3,
+        3,
+        3,
+        -1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "4",
+        "b7",
+        "9",
+        null
+      ],
+      "mutedStrings": [
+        6,
+        1
+      ],
+      "barre": {
+        "fret": 3,
+        "fromString": 2,
+        "toString": 5
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "C9sus4",
+      "root": "C",
+      "quality": "sus49",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        3,
+        -1,
+        3,
+        3,
+        1
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        null,
+        "b7",
+        "9",
+        "4"
+      ],
+      "mutedStrings": [
+        6,
+        4
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "C9sus4",
+      "root": "C",
+      "quality": "sus49",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 10,
+      "frets": [
+        -1,
+        -1,
+        10,
+        10,
+        11,
+        10
+      ],
+      "intervalLabels": [
+        null,
+        null,
+        "1",
+        "4",
+        "b7",
+        "9"
+      ],
+      "mutedStrings": [
+        6,
+        5
+      ],
+      "barre": {
+        "fret": 10,
+        "fromString": 1,
+        "toString": 4
+      },
+      "optionalDots": []
+    },
+    {
+      "name": "C9sus4",
+      "root": "C",
+      "quality": "sus49",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 8,
+      "frets": [
+        8,
+        -1,
+        8,
+        10,
+        8,
+        10
+      ],
+      "intervalLabels": [
+        "1",
+        null,
+        "b7",
+        "4",
+        "5",
+        "9"
+      ],
+      "mutedStrings": [
+        5
+      ],
+      "barre": {
+        "fret": 8,
+        "fromString": 2,
+        "toString": 6
+      },
+      "optionalDots": []
+    }
+  ]
+}

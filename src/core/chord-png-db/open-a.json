@@ -1,0 +1,123 @@
+{
+  "source": "open-a.png",
+  "family": "open",
+  "title": "Open Chords With A Root",
+  "diagrams": [
+    {
+      "name": "Amaj7",
+      "root": "A",
+      "quality": "maj7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 3,
+      "frets": [
+        -1,
+        0,
+        6,
+        6,
+        0,
+        0
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "7",
+        "3",
+        "2",
+        "5"
+      ],
+      "mutedStrings": [
+        6
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "A(add 9)",
+      "root": "A",
+      "quality": "add9",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 1,
+      "frets": [
+        -1,
+        0,
+        2,
+        4,
+        2,
+        0
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "5",
+        "9",
+        "3",
+        "5"
+      ],
+      "mutedStrings": [
+        6
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Am7",
+      "root": "A",
+      "quality": "m7",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 3,
+      "frets": [
+        -1,
+        0,
+        5,
+        5,
+        0,
+        0
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "b7",
+        "b3",
+        "9",
+        "5"
+      ],
+      "mutedStrings": [
+        6
+      ],
+      "barre": null,
+      "optionalDots": []
+    },
+    {
+      "name": "Am",
+      "root": "A",
+      "quality": "m",
+      "bassNote": null,
+      "rootless": false,
+      "baseFret": 7,
+      "frets": [
+        -1,
+        0,
+        10,
+        9,
+        0,
+        0
+      ],
+      "intervalLabels": [
+        null,
+        "1",
+        "b3",
+        "5",
+        "9",
+        "5"
+      ],
+      "mutedStrings": [
+        6
+      ],
+      "barre": null,
+      "optionalDots": []
+    }
+  ]
+}
