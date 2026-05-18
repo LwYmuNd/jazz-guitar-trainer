@@ -6,6 +6,7 @@ import { initChordDiagrams } from './modules/chord-diagrams.js';
 import { initChordLibrary } from './modules/chord-library.js';
 import { initEarTraining } from './modules/ear-training.js';
 import { initIntervalTraining } from './modules/interval-training.js';
+import { initGuideToneTraining } from './modules/guide-tone-training.js';
 import { initZoomControl } from './utils/zoom-control.js';
 
 // 侧边栏切换
@@ -53,3 +54,4 @@ initChordDiagrams();
 initChordLibrary();
 initEarTraining();
 initIntervalTraining();
+initGuideToneTraining();

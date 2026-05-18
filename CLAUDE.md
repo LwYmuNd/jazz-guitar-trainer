@@ -17,14 +17,20 @@ npm install
 # 本地开发（启动 Vite 开发服务器）
 npm run dev
 
-# 运行测试
+# 运行全部测试
 npm test
+
+# 运行单个测试文件
+node --test tests/chord-ear-training.test.js
 
 # 构建生产版本
 npm run build
 
 # 预览构建结果
 npm run preview
+
+# 和弦数据校对工具（本地启动后在浏览器中比对 PNG 与 SVG 渲染）
+node tools/chord-db-review-server.mjs
 ```
 
 ## 技术栈
@@ -62,6 +68,10 @@ src/
 ├── utils/               # 工具函数
 │   └── zoom-control.js       # 全局缩放控制
 └── styles/              # 全局样式
+tests/                   # 仅覆盖 core/ 层的纯逻辑测试
+tools/                   # 开发辅助工具（和弦数据校对服务器等）
+openspec/                # spec-driven 变更管理（specs + changes archive）
+docs/                    # 产品需求文档与迭代规划
 ```
 
 ### 架构原则
@@ -91,7 +101,7 @@ src/
 5. **和弦字典（PNG 解析数据库路线）**
    - 数据来源：`public/chords/*.png` 中的 44 张教学和弦图（quartal 暂不收入）
    - 数据生成：PNG 已通过多模态识别 + 人工校对转换为结构化 JSON，存放在 `src/core/chord-png-db/<source>.json`（44 个文件，229 个 diagrams）
-   - 校对工具：`node tools/chord-db-review-server.mjs` 启动本地服务器，浏览器打开后可逐张比对 PNG 与 SVG 渲染并修正 JSON
+   - 校对工具：见开发命令中的 `chord-db-review-server.mjs`，浏览器打开后可逐张比对 PNG 与 SVG 渲染并修正 JSON
    - 运行时聚合：`src/core/chord-png-database.js` 用 Vite 的 `import.meta.glob` 在构建时收集所有校对后的 JSON
    - 查询 API：`getFamilies / getQualitiesByFamily / getDiagrams`，支持 9 类 family（basic / shell / extended-maj / extended-dom / sus / extended-min / altered / drop2 / drop3 / open）
    - 显示层统一 ASCII 升降号（`Db`、`7#9`、`m7b5`）
@@ -145,10 +155,17 @@ src/
 
 ## 测试策略
 
-- 测试文件位于 `tests/` 目录
+- 测试文件位于 `tests/` 目录，使用 Node.js 内置 test runner
 - 仅测试 `core/` 层的纯逻辑函数
 - UI 功能通过本地开发服务器手动验证
 - 重点测试和弦题库生成、voicing 计算、音符转换、音程题库生成等核心逻辑
+- 测试直接 import `src/core/*.js`，无需构建步骤
+
+## 变更管理（OpenSpec）
+
+项目使用 `openspec/` 目录进行 spec-driven 变更管理：
+- `openspec/specs/` — 各功能模块的 capability spec（当前有 `chord-library`、`interval-ear-training`）
+- `openspec/changes/archive/` — 已完成变更的 proposal / design / tasks 归档
 
 ## 部署配置
 

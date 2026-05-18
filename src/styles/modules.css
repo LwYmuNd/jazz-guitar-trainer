@@ -873,3 +873,25 @@ select optgroup { font-weight: 600; color: var(--text-muted); }
   color: var(--text-muted);
   background: rgba(255,255,255,0.72);
 }
+
+/* Guide Tone Line Module */
+.gt-chord-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  background: rgba(124,58,237,0.08);
+  color: var(--text);
+  border: 2px solid rgba(124,58,237,0.15);
+}
+.gt-chord-badge.gt-chord-current {
+  background: rgba(124,58,237,0.18);
+  border-color: var(--primary);
+  color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+}
+.gt-chord-badge.gt-chord-past {
+  opacity: 0.5;
+}
