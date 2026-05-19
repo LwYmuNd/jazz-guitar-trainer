@@ -1,0 +1,6 @@
+{"file": ".trellis/tasks/05-18-guide-tone-line/prd.md", "reason": "PRD with full requirements including Phase 2 improvements (style, full fretboard, guitar tone)"}
+{"file": "CLAUDE.md", "reason": "Project conventions: note naming (Unicode vs ASCII), voicing data structure, architecture principles, testing strategy"}
+{"file": "src/core/audio-engine.js", "reason": "Existing audio engine - add getGuitarSampler() following getPianoSampler() pattern"}
+{"file": "src/components/custom-select.js", "reason": "Custom select component API - replace native selects in guide-tone-training.js"}
+{"file": "src/modules/guide-tone-training.js", "reason": "Current UI module to modify: replace native selects, change default to full fretboard, switch to guitar sampler"}
+{"file": ".trellis/tasks/05-18-guide-tone-line/research/guitar-samples.md", "reason": "Research findings on guitar sample CDN integration details"}
