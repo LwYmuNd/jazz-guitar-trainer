@@ -178,6 +178,110 @@ function noteToSemitone(name) {
 
 export { noteToSemitone };
 
+const LETTER_ORDER = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+const SEMI_OF_LETTER = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+
+/**
+ * Spell a note name from a semitone value given a target letter.
+ * Returns the letter with the correct accidental(s) to reach targetSemi.
+ */
+function spellNoteWithLetter(letter, targetSemi) {
+  const natural = SEMI_OF_LETTER[letter];
+  const diff = ((targetSemi - natural) + 12) % 12;
+  if (diff === 0) return letter;
+  if (diff === 1) return letter + '♯';
+  if (diff === 11) return letter + '♭';
+  if (diff === 2) return letter + '♯♯';
+  if (diff === 10) return letter + '♭♭';
+  // Fallback: use NOTES array
+  return NOTES[targetSemi];
+}
+
+/**
+ * Get the spelled name for a chord tone based on the chord root.
+ * Uses jazz-standard tertian spelling: each chord tone occupies the next
+ * letter in the scale-letter sequence from the root.
+ *
+ * @param {string} root - Root note name (e.g. "B♭", "F♯")
+ * @param {number} intervalIndex - Scale-degree offset: root=0, 3rd=1, 5th=2, 7th=3, 9th=4, 11th=5, 13th=6
+ * @param {number} targetSemitone - The actual semitone (0-11) of the chord tone
+ * @returns {string} - Correctly spelled note name
+ */
+export function spellChordTone(root, intervalIndex, targetSemitone) {
+  const rootLetter = root.charAt(0).toUpperCase();
+  const rootLetterIdx = LETTER_ORDER.indexOf(rootLetter);
+  if (rootLetterIdx < 0) return NOTES[targetSemitone];
+
+  // Chord tones stack in thirds: root(0), 3rd(2 letters up), 5th(4), 7th(6), 9th(1+7=8→1), 11th(3+7=10→3), 13th(5+7=12→5)
+  // intervalIndex maps: 0→root, 1→3rd(+2), 2→5th(+4), 3→7th(+6), 4→9th(+1), 5→11th(+3), 6→13th(+5)
+  const letterOffsets = [0, 2, 4, 6, 1, 3, 5];
+  const offset = letterOffsets[intervalIndex] !== undefined ? letterOffsets[intervalIndex] : 0;
+  const targetLetterIdx = (rootLetterIdx + offset) % 7;
+  const targetLetter = LETTER_ORDER[targetLetterIdx];
+
+  return spellNoteWithLetter(targetLetter, targetSemitone);
+}
+
+/**
+ * Map from tone label to intervalIndex for spellChordTone.
+ */
+const TONE_TO_INTERVAL_INDEX = {
+  'root': 0,
+  '2nd': 4, // same letter position as 9th
+  '3rd': 1,
+  '4th': 5, // same letter position as 11th
+  '5th': 2,
+  '6th': 6, // same letter position as 13th
+  '7th': 3,
+  '9th': 4,
+  '♭9th': 4,
+  '♯9th': 4,
+  '11th': 5,
+  '♯11th': 5,
+  '♭13th': 6,
+  '13th': 6,
+};
+
+/**
+ * Get spelled chord tone names for a chord, keyed by voice part.
+ * Returns a map using the same keys as getChordTones: { root, '3rd', '5th', '7th' }
+ *
+ * @param {string} root - Root note name
+ * @param {string} quality - Chord quality string
+ * @returns {Object<string, string>|null} - Map of voice part to spelled note name
+ */
+export function getSpelledChordTones(root, quality) {
+  const rootSemi = noteToSemitone(root);
+  if (rootSemi < 0) return null;
+
+  const qualityDef = resolveQuality(quality);
+  if (!qualityDef) return null;
+
+  const result = { root: null, '3rd': null, '5th': null, '7th': null };
+
+  for (let i = 0; i < qualityDef.tones.length; i++) {
+    const tone = qualityDef.tones[i];
+    const semitone = (rootSemi + qualityDef.intervals[i]) % 12;
+    const intervalIdx = TONE_TO_INTERVAL_INDEX[tone];
+    const spelled = intervalIdx !== undefined
+      ? spellChordTone(root, intervalIdx, semitone)
+      : NOTES[semitone];
+
+    // Map to voice part keys (same logic as getChordTones)
+    if (tone === 'root') {
+      result.root = spelled;
+    } else if (tone === '3rd' || tone === '4th' || tone === '2nd') {
+      result['3rd'] = spelled;
+    } else if (tone === '5th') {
+      result['5th'] = spelled;
+    } else if (tone === '7th' || tone === '6th') {
+      result['7th'] = spelled;
+    }
+  }
+
+  return result;
+}
+
 /**
  * Get chord tones as semitone offsets for the four primary voices.
  * Returns { root, '3rd', '5th', '7th' } with semitone values (0-11).
@@ -273,6 +377,27 @@ export const PRESET_PROGRESSIONS = {
     }
   },
 };
+
+/**
+ * Get all fret positions for a given semitone class (all octaves) within a fret range.
+ *
+ * @param {number} semitone - Pitch class 0-11
+ * @param {number} [maxFret=22] - Maximum fret to consider
+ * @returns {Array<{string: number, fret: number, midi: number}>}
+ */
+export function getAllPositionsForSemitone(semitone, maxFret = MAX_FRET) {
+  const positions = [];
+  for (let s = 0; s < 6; s++) {
+    const openMidi = TUNING[s];
+    for (let fret = 0; fret <= maxFret; fret++) {
+      const midi = openMidi + fret;
+      if (midi % 12 === semitone) {
+        positions.push({ string: 6 - s, fret, midi });
+      }
+    }
+  }
+  return positions;
+}
 
 /**
  * Get all possible fret positions for a given MIDI note on the guitar.
@@ -534,6 +659,6 @@ export function getMovementColor(movement) {
 export const VOICE_PART_COLORS = {
   'root': '#DC2626',   // red
   '3rd': '#7C3AED',    // purple
-  '5th': '#2563EB',    // blue
+  '5th': '#059669',    // emerald green
   '7th': '#D97706',    // amber
 };

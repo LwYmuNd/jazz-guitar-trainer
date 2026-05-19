@@ -1,9 +1,5 @@
 /**
  * Guide Tone Line Training - UI Module
- *
- * Provides a horizontal fretboard visualization with two modes:
- * - Observe: shows complete guide tone path with connecting lines
- * - Practice: step-by-step reveal with dimmed previous positions
  */
 
 import { NOTES, GUITAR_TUNING } from '../core/music-theory.js';
@@ -12,15 +8,14 @@ import {
   parseProgression,
   transposeProgression,
   noteToSemitone,
-  getChordTones,
   generateGuideToneLine,
-  midiToToneName,
-  getMovementLabel,
-  getMovementColor,
+  getAllPositionsForSemitone,
+  getChordTones,
+  getSpelledChordTones,
   PRESET_PROGRESSIONS,
   VOICE_PART_COLORS,
 } from '../core/guide-tone.js';
-import { ensureStarted, playPlaybackEvents, playChord } from '../core/audio-engine.js';
+import { createCustomSelect } from '../components/custom-select.js';
 
 // Fretboard dimensions
 const FRETS = 15;
@@ -29,60 +24,38 @@ const FRET_W = 56;
 const STR_GAP = 32;
 const START_X = 50;
 const START_Y = 40;
-const DOT_R = 12;
+const DOT_R = 14;
+
+// Chord builder quality options
+const BUILDER_QUALITIES = ['maj7', '7', 'm7', 'm7b5', 'dim7', '6', 'm6', 'aug', 'sus4', 'm', 'maj'];
 
 // State
 let state = {
-  mode: 'observe', // 'observe' | 'practice'
   chords: [],      // [{root, quality}]
   voiceParts: ['3rd', '7th'],
-  startFret: 1,
-  endFret: 5,
-  fullFretboard: false,
-  overlay: false,
   lines: [],       // generated guide tone lines
-  // Practice mode state
-  practiceStep: 0,
-  revealed: false,
-  // Audio
-  audioMode: 'guideTone', // 'guideTone' | 'chordPlusGuideTone'
-  // Progression input
+  focusedChordIndex: 0,
   selectedPreset: 'ii-V-I-major',
   customInput: '',
   key: 'C',
+  builderRoot: 'C',
+  builderQuality: 'maj7',
 };
-
-function getConstraints() {
-  if (state.fullFretboard) {
-    return { startFret: 0, endFret: FRETS };
-  }
-  return { startFret: state.startFret, endFret: state.endFret };
-}
 
 function regenerateLines() {
   if (!state.chords.length) {
     state.lines = [];
     return;
   }
-  state.lines = generateGuideToneLine(state.chords, state.voiceParts, getConstraints());
-}
-
-function getDisplayFrets() {
-  if (state.fullFretboard) return FRETS;
-  return state.endFret - state.startFret + 2; // +2 for some padding
-}
-
-function getDisplayStartFret() {
-  if (state.fullFretboard) return 0;
-  return Math.max(0, state.startFret - 1);
+  state.lines = generateGuideToneLine(state.chords, state.voiceParts, { startFret: 0, endFret: FRETS });
 }
 
 /**
  * Render the horizontal fretboard SVG with guide tone positions and connections.
  */
 function renderFretboard(container) {
-  const displayFrets = state.fullFretboard ? FRETS : Math.min(FRETS, state.endFret - state.startFret + 4);
-  const displayStart = getDisplayStartFret();
+  const displayFrets = FRETS;
+  const displayStart = 0;
 
   const W = FRET_W * (displayFrets + 1) + START_X + 30;
   const H = STR_GAP * (STRINGS + 1) + 40;
@@ -122,17 +95,13 @@ function renderFretboard(container) {
     svg += `<line x1="${START_X}" y1="${y}" x2="${START_X + displayFrets * FRET_W}" y2="${y}" stroke="#8A8070" stroke-width="${1 + s * 0.3}"/>`;
 
     // String label (open note)
-    const openMidi = GUITAR_TUNING[STRINGS - 1 - s]; // s=0 is string 1 (highest)
+    const openMidi = GUITAR_TUNING[STRINGS - 1 - s];
     const openNote = NOTES[openMidi % 12];
     svg += `<text x="${START_X - 22}" y="${y + 4}" fill="#6B6560" font-size="11" text-anchor="middle">${openNote}</text>`;
   }
 
   // Draw guide tone positions and connections
-  if (state.mode === 'observe') {
-    svg += renderObserveMode(displayStart, displayFrets);
-  } else {
-    svg += renderPracticeMode(displayStart, displayFrets);
-  }
+  svg += renderGuideTones(displayStart, displayFrets);
 
   svg += '</svg>';
   container.innerHTML = svg;
@@ -149,236 +118,79 @@ function posToXY(pos, displayStart) {
   return { x, y };
 }
 
-function renderObserveMode(displayStart, displayFrets) {
+function renderGuideTones(displayStart, displayFrets) {
   let svg = '';
+  const maxFret = FRETS;
+  const focusIdx = state.focusedChordIndex;
 
-  // For each voice part line
-  for (let lineIdx = 0; lineIdx < state.lines.length; lineIdx++) {
-    const line = state.lines[lineIdx];
-    if (!line || !line.length) continue;
-
-    // If not overlay mode and this isn't the first line, skip
-    if (!state.overlay && lineIdx > 0) continue;
-
-    const voicePart = state.voiceParts[lineIdx];
+  for (const voicePart of state.voiceParts) {
     const color = VOICE_PART_COLORS[voicePart] || '#7C3AED';
 
-    // Draw connecting lines first (behind dots)
-    for (let i = 1; i < line.length; i++) {
-      const prev = line[i - 1];
-      const curr = line[i];
-      if (!prev || !curr) continue;
+    const prevIdx = focusIdx - 1;
+    const chordsToShow = [];
+    if (prevIdx >= 0) chordsToShow.push(prevIdx);
+    chordsToShow.push(focusIdx);
 
-      const prevXY = posToXY(prev, displayStart);
-      const currXY = posToXY(curr, displayStart);
-
-      // Check if positions are within display range
-      const prevRelFret = prev.fret - displayStart;
-      const currRelFret = curr.fret - displayStart;
-      if (prevRelFret < 0 || prevRelFret > displayFrets || currRelFret < 0 || currRelFret > displayFrets) continue;
-
-      const movementColor = getMovementColor(curr.movement);
-
-      // Draw line
-      svg += `<line x1="${prevXY.x}" y1="${prevXY.y}" x2="${currXY.x}" y2="${currXY.y}" stroke="${movementColor}" stroke-width="2" stroke-dasharray="${curr.movement === 'hold' ? '4,3' : ''}" opacity="0.7"/>`;
-
-      // Draw movement label at midpoint
-      const midX = (prevXY.x + currXY.x) / 2;
-      const midY = (prevXY.y + currXY.y) / 2 - 10;
-      const label = getMovementLabel(curr.movement);
-      if (label) {
-        svg += `<text x="${midX}" y="${midY}" fill="${movementColor}" font-size="10" font-weight="600" text-anchor="middle">${label}</text>`;
-      }
-    }
-
-    // Draw dots
-    for (let i = 0; i < line.length; i++) {
-      const entry = line[i];
-      if (!entry) continue;
-
-      const relFret = entry.fret - displayStart;
-      if (relFret < 0 || relFret > displayFrets) continue;
-
-      const { x, y } = posToXY(entry, displayStart);
-
-      // Dot
-      svg += `<circle cx="${x}" cy="${y}" r="${DOT_R}" fill="${color}" opacity="0.9"/>`;
-      // Note name
-      svg += `<text x="${x}" y="${y + 4}" fill="#FFF" font-size="9" font-weight="600" text-anchor="middle">${entry.noteName}</text>`;
-      // Chord label below
-      svg += `<text x="${x}" y="${y + DOT_R + 12}" fill="${color}" font-size="8" text-anchor="middle" opacity="0.8">${entry.voicePart}</text>`;
-    }
-  }
-
-  return svg;
-}
-
-function renderPracticeMode(displayStart, displayFrets) {
-  let svg = '';
-
-  if (!state.lines.length || !state.lines[0]) return svg;
-
-  // Use first voice part line for practice (or overlay if enabled)
-  const linesToShow = state.overlay ? state.lines : [state.lines[0]];
-
-  for (let lineIdx = 0; lineIdx < linesToShow.length; lineIdx++) {
-    const line = linesToShow[lineIdx];
-    if (!line) continue;
-
-    const voicePart = state.voiceParts[lineIdx];
-    const color = VOICE_PART_COLORS[voicePart] || '#7C3AED';
-
-    // Show previous steps as dimmed
-    for (let i = 0; i < state.practiceStep; i++) {
-      const entry = line[i];
-      if (!entry) continue;
-
-      const relFret = entry.fret - displayStart;
-      if (relFret < 0 || relFret > displayFrets) continue;
-
-      const { x, y } = posToXY(entry, displayStart);
-
-      svg += `<circle cx="${x}" cy="${y}" r="${DOT_R}" fill="${color}" opacity="0.3"/>`;
-      svg += `<text x="${x}" y="${y + 4}" fill="#FFF" font-size="9" font-weight="600" text-anchor="middle" opacity="0.5">${entry.noteName}</text>`;
-
-      // Draw connecting line to next
-      if (i > 0) {
-        const prevEntry = line[i - 1];
-        if (prevEntry) {
-          const prevRelFret = prevEntry.fret - displayStart;
-          if (prevRelFret >= 0 && prevRelFret <= displayFrets) {
-            const prevXY = posToXY(prevEntry, displayStart);
-            svg += `<line x1="${prevXY.x}" y1="${prevXY.y}" x2="${x}" y2="${y}" stroke="${color}" stroke-width="1.5" opacity="0.25"/>`;
-          }
-        }
-      }
-    }
-
-    // Show current step if revealed
-    if (state.revealed && state.practiceStep < line.length) {
-      const entry = line[state.practiceStep];
-      if (entry) {
-        const relFret = entry.fret - displayStart;
-        if (relFret >= 0 && relFret <= displayFrets) {
-          const { x, y } = posToXY(entry, displayStart);
-
-          svg += `<circle cx="${x}" cy="${y}" r="${DOT_R + 2}" fill="${color}" opacity="1"/>`;
-          svg += `<text x="${x}" y="${y + 4}" fill="#FFF" font-size="10" font-weight="700" text-anchor="middle">${entry.noteName}</text>`;
-          svg += `<text x="${x}" y="${y + DOT_R + 14}" fill="${color}" font-size="9" text-anchor="middle" font-weight="600">${entry.voicePart}</text>`;
-
-          // Show connection from previous
-          if (state.practiceStep > 0) {
-            const prevEntry = line[state.practiceStep - 1];
-            if (prevEntry) {
-              const prevRelFret = prevEntry.fret - displayStart;
-              if (prevRelFret >= 0 && prevRelFret <= displayFrets) {
-                const prevXY = posToXY(prevEntry, displayStart);
-                const movementColor = getMovementColor(entry.movement);
-                svg += `<line x1="${prevXY.x}" y1="${prevXY.y}" x2="${x}" y2="${y}" stroke="${movementColor}" stroke-width="2.5" opacity="0.8"/>`;
-                const midX = (prevXY.x + x) / 2;
-                const midY = (prevXY.y + y) / 2 - 10;
-                const label = getMovementLabel(entry.movement);
-                if (label) {
-                  svg += `<text x="${midX}" y="${midY}" fill="${movementColor}" font-size="11" font-weight="700" text-anchor="middle">${label}</text>`;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  return svg;
-}
-
-/**
- * Build audio playback events for current state.
- */
-async function playGuideTone() {
-  await ensureStarted();
-
-  if (state.mode === 'observe') {
-    // Play all guide tones sequentially
-    const events = [];
-    const line = state.lines[0];
-    if (!line) return;
-
-    if (state.audioMode === 'guideTone') {
-      // Pure guide tone line
-      for (let i = 0; i < line.length; i++) {
-        const entry = line[i];
-        if (!entry) continue;
-        events.push({
-          notes: [midiToToneName(entry.midi)],
-          duration: 0.8,
-          delay: i * 1.0,
-        });
-      }
-    } else {
-      // Chord + guide tone
-      for (let i = 0; i < line.length; i++) {
-        const entry = line[i];
-        if (!entry) continue;
-        const chord = state.chords[i];
-        const tones = getChordTones(chord.root, chord.quality);
-        if (tones) {
-          // Build chord notes
-          const chordMidis = [];
-          for (const part of ['root', '3rd', '5th', '7th']) {
-            if (tones[part] !== null && tones[part] !== undefined) {
-              // Use octave 3 for chord background
-              chordMidis.push(tones[part] + 48);
-            }
-          }
-          const chordNotes = chordMidis.map(m => midiToToneName(m));
-          events.push({
-            notes: chordNotes,
-            duration: 0.8,
-            delay: i * 1.0,
-          });
-          // Guide tone highlighted slightly after
-          events.push({
-            notes: [midiToToneName(entry.midi)],
-            duration: 0.6,
-            delay: i * 1.0 + 0.15,
-          });
-        }
-      }
-    }
-
-    await playPlaybackEvents(events);
-  } else {
-    // Practice mode: play current step
-    const line = state.lines[0];
-    if (!line || state.practiceStep >= line.length) return;
-    const entry = line[state.practiceStep];
-    if (!entry) return;
-
-    if (state.audioMode === 'guideTone') {
-      await playPlaybackEvents([{
-        notes: [midiToToneName(entry.midi)],
-        duration: 1.0,
-        delay: 0,
-      }]);
-    } else {
-      const chord = state.chords[state.practiceStep];
+    const chordPositionsMap = {};
+    for (const idx of chordsToShow) {
+      if (idx < 0 || idx >= state.chords.length) continue;
+      const chord = state.chords[idx];
       const tones = getChordTones(chord.root, chord.quality);
-      if (tones) {
-        const chordMidis = [];
-        for (const part of ['root', '3rd', '5th', '7th']) {
-          if (tones[part] !== null && tones[part] !== undefined) {
-            chordMidis.push(tones[part] + 48);
+      if (!tones || tones[voicePart] === null || tones[voicePart] === undefined) {
+        chordPositionsMap[idx] = [];
+        continue;
+      }
+      const semitone = tones[voicePart];
+      const spelledTones = getSpelledChordTones(chord.root, chord.quality);
+      const spelledName = (spelledTones && spelledTones[voicePart]) || NOTES[semitone];
+      const positions = getAllPositionsForSemitone(semitone, maxFret)
+        .filter(p => p.fret >= displayStart && p.fret <= displayStart + displayFrets);
+      chordPositionsMap[idx] = positions.map(p => ({
+        ...p,
+        noteName: spelledName,
+      }));
+    }
+
+    // Draw dots for the sliding window
+    for (const idx of chordsToShow) {
+      const positions = chordPositionsMap[idx];
+      if (!positions) continue;
+      const isCurrent = idx === focusIdx;
+      const dotOpacity = isCurrent ? 0.9 : 0.4;
+      const textOpacity = isCurrent ? 1 : 0.6;
+
+      // Detect common tones for current chord positions
+      let commonToneSemitones = new Set();
+      if (isCurrent && prevIdx >= 0 && prevIdx < state.chords.length) {
+        const prevChord = state.chords[prevIdx];
+        const prevTones = getChordTones(prevChord.root, prevChord.quality);
+        if (prevTones) {
+          for (const otherPart of state.voiceParts) {
+            if (prevTones[otherPart] !== null && prevTones[otherPart] !== undefined) {
+              commonToneSemitones.add(prevTones[otherPart]);
+            }
           }
         }
-        const chordNotes = chordMidis.map(m => midiToToneName(m));
-        await playPlaybackEvents([
-          { notes: chordNotes, duration: 1.0, delay: 0 },
-          { notes: [midiToToneName(entry.midi)], duration: 0.8, delay: 0.15 },
-        ]);
+      }
+
+      for (const pos of positions) {
+        const { x, y } = posToXY(pos, displayStart);
+        const isCommon = isCurrent && commonToneSemitones.has(pos.midi % 12);
+        if (isCommon) {
+          // Outer glow halo for common tones
+          svg += `<circle cx="${x}" cy="${y}" r="${DOT_R + 5}" fill="#FFF" opacity="0.25"/>`;
+          svg += `<circle cx="${x}" cy="${y}" r="${DOT_R + 2}" fill="${color}" opacity="${dotOpacity}" stroke="#FFF" stroke-width="3"/>`;
+        } else {
+          svg += `<circle cx="${x}" cy="${y}" r="${DOT_R}" fill="${color}" opacity="${dotOpacity}"/>`;
+        }
+        // Single line: note name only, centered
+        const r = isCommon ? DOT_R + 2 : DOT_R;
+        svg += `<text x="${x}" y="${y + 4}" fill="#FFF" font-size="${isCommon ? '10' : '9'}" font-weight="600" text-anchor="middle" opacity="${textOpacity}">${pos.noteName}</text>`;
       }
     }
   }
+
+  return svg;
 }
 
 /**
@@ -396,6 +208,10 @@ function chordDisplayName(root, quality) {
  */
 function updateProgression() {
   if (state.selectedPreset === 'custom') {
+    if (!state.customInput.trim()) {
+      state.chords = [];
+      return [];
+    }
     const result = parseProgression(state.customInput);
     // Apply transposition based on selected key (C = no transpose)
     const semitones = noteToSemitone(state.key);
@@ -419,6 +235,29 @@ function updateProgression() {
 }
 
 /**
+ * Build groups for the preset custom-select.
+ */
+function buildPresetGroups() {
+  const options = Object.entries(PRESET_PROGRESSIONS).map(([id, p]) => ({
+    value: id,
+    label: p.label,
+  }));
+  options.push({ value: 'custom', label: 'Custom' });
+  return [{ options }];
+}
+
+/**
+ * Build groups for the key custom-select.
+ */
+function buildKeyGroups() {
+  const options = NOTES.map(n => ({
+    value: n,
+    label: n.replace(/♯/g, '#').replace(/♭/g, 'b'),
+  }));
+  return [{ options }];
+}
+
+/**
  * Main render function for the entire module UI.
  */
 function render() {
@@ -428,51 +267,61 @@ function render() {
   const errors = updateProgression();
   regenerateLines();
 
-  // Current chord info for practice mode
-  let currentChordLabel = '';
-  if (state.mode === 'practice' && state.chords.length > 0 && state.practiceStep < state.chords.length) {
-    const chord = state.chords[state.practiceStep];
-    currentChordLabel = chordDisplayName(chord.root, chord.quality);
+  // Clamp focusedChordIndex to valid range
+  if (state.chords.length > 0) {
+    if (state.focusedChordIndex >= state.chords.length) {
+      state.focusedChordIndex = state.chords.length - 1;
+    }
+  } else {
+    state.focusedChordIndex = 0;
   }
 
   // Build progression display
   const progressionDisplay = state.chords.map((c, i) => {
     const name = chordDisplayName(c.root, c.quality);
-    const isCurrent = state.mode === 'practice' && i === state.practiceStep;
-    const isPast = state.mode === 'practice' && i < state.practiceStep;
+    const isFocused = i === state.focusedChordIndex;
     let cls = 'gt-chord-badge';
-    if (isCurrent) cls += ' gt-chord-current';
-    if (isPast) cls += ' gt-chord-past';
-    return `<span class="${cls}">${name}</span>`;
+    if (isFocused) cls += ' gt-chord-focused';
+    return `<span class="${cls}" data-chord-idx="${i}" style="cursor:pointer;">${name}</span>`;
   }).join(' ');
 
   container.innerHTML = `
     <div class="card">
       <h2>Guide Tone Line</h2>
 
-      <div class="controls" style="flex-wrap:wrap;gap:10px;">
-        <select id="gt-preset">
-          ${Object.entries(PRESET_PROGRESSIONS).map(([id, p]) =>
-            `<option value="${id}" ${state.selectedPreset === id ? 'selected' : ''}>${p.label}</option>`
-          ).join('')}
-          <option value="custom" ${state.selectedPreset === 'custom' ? 'selected' : ''}>Custom</option>
-        </select>
-
-        <select id="gt-key">
-          ${NOTES.map(n => `<option value="${n}" ${state.key === n ? 'selected' : ''}>${n.replace(/♯/g, '#').replace(/♭/g, 'b')}</option>`).join('')}
-        </select>
-
-        <div class="degree-toggle" id="gt-mode-toggle">
-          <button class="${state.mode === 'observe' ? 'active' : ''}" data-mode="observe">观察</button>
-          <button class="${state.mode === 'practice' ? 'active' : ''}" data-mode="practice">练习</button>
-        </div>
-      </div>
+      <div class="controls" id="gt-controls"></div>
 
       ${state.selectedPreset === 'custom' ? `
-        <div style="margin-bottom:14px;">
-          <input type="text" id="gt-custom-input" placeholder="输入和弦进行，如：Dm7 G7 Cmaj7" value="${state.customInput}" style="width:100%;max-width:400px;padding:8px 12px;border:2px solid var(--clay-border);border-radius:8px;font-size:0.85rem;font-family:var(--font-body);">
-          ${errors.length ? `<div style="color:#DC2626;font-size:0.8rem;margin-top:4px;">${errors.join(', ')}</div>` : ''}
-          ${state.key !== 'C' ? `<div style="color:var(--text-muted);font-size:0.75rem;margin-top:4px;">已移调: +${noteToSemitone(state.key)} 半音</div>` : ''}
+        <div class="gt-builder-panel">
+          <div class="gt-builder-row">
+            ${NOTES.map(n => {
+              const display = n.replace(/♯/g, '#').replace(/♭/g, 'b');
+              const isActive = n === state.builderRoot;
+              return `<button class="gt-builder-root gt-builder-chip${isActive ? ' active' : ''}" data-root="${n}">${display}</button>`;
+            }).join('')}
+          </div>
+          <div class="gt-builder-row">
+            ${BUILDER_QUALITIES.map(q => {
+              const isActive = q === state.builderQuality;
+              return `<button class="gt-builder-quality gt-builder-chip${isActive ? ' active' : ''}" data-quality="${q}">${q}</button>`;
+            }).join('')}
+          </div>
+          <div class="gt-builder-actions">
+            <button id="gt-builder-add" class="gt-builder-btn gt-builder-btn-add">+ 添加</button>
+            <button id="gt-builder-clear" class="gt-builder-btn gt-builder-btn-clear">清空</button>
+            ${state.customInput.trim() ? `
+              <div class="gt-builder-badges">
+                ${state.customInput.trim().split(/\s+/).map((chord, i) => `
+                  <span class="gt-builder-badge">
+                    ${chord}
+                    <span class="gt-builder-remove" data-idx="${i}">&times;</span>
+                  </span>
+                `).join('')}
+              </div>
+            ` : ''}
+          </div>
+          ${errors.length ? `<div style="color:#DC2626;font-size:0.8rem;margin-top:10px;">${errors.join(', ')}</div>` : ''}
+          ${state.key !== 'C' ? `<div style="color:var(--text-muted);font-size:0.75rem;margin-top:6px;">已移调: +${noteToSemitone(state.key)} 半音</div>` : ''}
         </div>
       ` : ''}
 
@@ -484,74 +333,43 @@ function render() {
             <span style="color:${VOICE_PART_COLORS[part]};font-weight:600;">${part}</span>
           </label>
         `).join('')}
-
-        <span style="margin-left:12px;font-size:0.8rem;color:var(--text-muted);">|</span>
-
-        <label style="display:inline-flex;align-items:center;gap:3px;font-size:0.8rem;cursor:pointer;">
-          <input type="checkbox" id="gt-overlay" ${state.overlay ? 'checked' : ''}>
-          <span>叠加显示</span>
-        </label>
-
-        <label style="display:inline-flex;align-items:center;gap:3px;font-size:0.8rem;cursor:pointer;margin-left:8px;">
-          <input type="checkbox" id="gt-full-fb" ${state.fullFretboard ? 'checked' : ''}>
-          <span>全指板</span>
-        </label>
       </div>
 
-      ${!state.fullFretboard ? `
-        <div style="margin-bottom:14px;display:flex;align-items:center;gap:8px;">
-          <span style="font-size:0.8rem;color:var(--text-muted);">把位:</span>
-          <input type="number" id="gt-start-fret" min="0" max="19" value="${state.startFret}" style="width:50px;padding:4px 8px;border:2px solid var(--clay-border);border-radius:6px;font-size:0.85rem;">
-          <span style="font-size:0.8rem;">~</span>
-          <input type="number" id="gt-end-fret" min="1" max="22" value="${state.endFret}" style="width:50px;padding:4px 8px;border:2px solid var(--clay-border);border-radius:6px;font-size:0.85rem;">
-        </div>
-      ` : ''}
-
       <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;">
+        ${state.chords.length > 1 ? `
+          <button id="gt-nav-prev" class="gt-nav-btn" ${state.focusedChordIndex <= 0 ? 'disabled' : ''} style="border:none;background:var(--clay-bg);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:1rem;color:var(--text);opacity:${state.focusedChordIndex <= 0 ? '0.3' : '1'};">&larr;</button>
+        ` : ''}
         ${progressionDisplay}
+        ${state.chords.length > 1 ? `
+          <button id="gt-nav-next" class="gt-nav-btn" ${state.focusedChordIndex >= state.chords.length - 1 ? 'disabled' : ''} style="border:none;background:var(--clay-bg);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:1rem;color:var(--text);opacity:${state.focusedChordIndex >= state.chords.length - 1 ? '0.3' : '1'};">&rarr;</button>
+        ` : ''}
       </div>
 
       <div class="fretboard" id="gt-fretboard" style="overflow-x:auto;margin-bottom:14px;"></div>
-
-      <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
-        ${state.mode === 'practice' ? `
-          <button class="btn btn-primary" id="gt-reveal" ${state.revealed ? 'disabled' : ''}>
-            ${state.revealed ? '已揭示' : '揭示'}
-          </button>
-          <button class="btn btn-secondary" id="gt-next" ${!state.revealed ? 'disabled' : ''}>
-            下一步
-          </button>
-          <button class="btn btn-secondary" id="gt-reset-practice">
-            重置
-          </button>
-        ` : ''}
-        <button class="btn btn-secondary" id="gt-play">
-          <span style="margin-right:4px;">&#9654;</span> 播放
-        </button>
-        <select id="gt-audio-mode" style="min-width:auto;padding:6px 10px;">
-          <option value="guideTone" ${state.audioMode === 'guideTone' ? 'selected' : ''}>Guide Tone</option>
-          <option value="chordPlusGuideTone" ${state.audioMode === 'chordPlusGuideTone' ? 'selected' : ''}>和弦 + Guide Tone</option>
-        </select>
-      </div>
-
-      ${state.mode === 'practice' && currentChordLabel ? `
-        <div style="margin-top:12px;font-size:1.1rem;font-weight:600;color:var(--text);">
-          当前和弦: <span style="color:var(--primary);font-family:var(--font-mono);">${currentChordLabel}</span>
-          <span style="font-size:0.8rem;color:var(--text-muted);margin-left:8px;">(${state.practiceStep + 1}/${state.chords.length})</span>
-        </div>
-      ` : ''}
-
-      <div style="margin-top:12px;">
-        <div style="display:flex;flex-wrap:wrap;gap:12px;font-size:0.75rem;color:var(--text-muted);">
-          <span><span style="color:#2563EB;">&#9679;</span> 半音下行 ↓½</span>
-          <span><span style="color:#DC2626;">&#9679;</span> 半音上行 ↑½</span>
-          <span><span style="color:#7C3AED;">&#9679;</span> 全音下行 ↓1</span>
-          <span><span style="color:#D97706;">&#9679;</span> 全音上行 ↑1</span>
-          <span><span style="color:#059669;">&#9679;</span> 保持不动 →</span>
-        </div>
-      </div>
     </div>
   `;
+
+  // Build controls bar with custom-select components
+  const controlsBar = document.getElementById('gt-controls');
+  if (controlsBar) {
+    const presetSelect = createCustomSelect('gt-preset', buildPresetGroups(), state.selectedPreset);
+    controlsBar.appendChild(presetSelect);
+
+    const keySelect = createCustomSelect('gt-key', buildKeyGroups(), state.key);
+    controlsBar.appendChild(keySelect);
+
+    presetSelect.addEventListener('change', (e) => {
+      state.selectedPreset = e.detail.value;
+      state.focusedChordIndex = 0;
+      render();
+    });
+
+    keySelect.addEventListener('change', (e) => {
+      state.key = e.detail.value;
+      state.focusedChordIndex = 0;
+      render();
+    });
+  }
 
   // Render fretboard
   const fbContainer = document.getElementById('gt-fretboard');
@@ -559,50 +377,38 @@ function render() {
     renderFretboard(fbContainer);
   }
 
-  // Bind events
+  // Bind remaining events
   bindEvents();
 }
 
 function bindEvents() {
-  const presetSel = document.getElementById('gt-preset');
-  if (presetSel) {
-    presetSel.addEventListener('change', (e) => {
-      state.selectedPreset = e.target.value;
-      state.practiceStep = 0;
-      state.revealed = false;
+  // Chord badge click to set focused chord index
+  document.querySelectorAll('.gt-chord-badge[data-chord-idx]').forEach(badge => {
+    badge.addEventListener('click', () => {
+      const idx = parseInt(badge.dataset.chordIdx);
+      if (isNaN(idx)) return;
+      state.focusedChordIndex = idx;
       render();
     });
-  }
+  });
 
-  const keySel = document.getElementById('gt-key');
-  if (keySel) {
-    keySel.addEventListener('change', (e) => {
-      state.key = e.target.value;
-      state.practiceStep = 0;
-      state.revealed = false;
-      render();
+  // Navigation arrows
+  const navPrev = document.getElementById('gt-nav-prev');
+  if (navPrev) {
+    navPrev.addEventListener('click', () => {
+      if (state.focusedChordIndex > 0) {
+        state.focusedChordIndex--;
+        render();
+      }
     });
   }
-
-  const modeToggle = document.getElementById('gt-mode-toggle');
-  if (modeToggle) {
-    modeToggle.addEventListener('click', (e) => {
-      const btn = e.target.closest('button[data-mode]');
-      if (!btn) return;
-      state.mode = btn.dataset.mode;
-      state.practiceStep = 0;
-      state.revealed = false;
-      render();
-    });
-  }
-
-  const customInput = document.getElementById('gt-custom-input');
-  if (customInput) {
-    customInput.addEventListener('input', (e) => {
-      state.customInput = e.target.value;
-      state.practiceStep = 0;
-      state.revealed = false;
-      render();
+  const navNext = document.getElementById('gt-nav-next');
+  if (navNext) {
+    navNext.addEventListener('click', () => {
+      if (state.focusedChordIndex < state.chords.length - 1) {
+        state.focusedChordIndex++;
+        render();
+      }
     });
   }
 
@@ -613,102 +419,66 @@ function bindEvents() {
       document.querySelectorAll('.gt-voice-cb:checked').forEach(checked => {
         parts.push(checked.dataset.part);
       });
-      state.voiceParts = parts.length ? parts : ['3rd']; // At least one
-      state.practiceStep = 0;
-      state.revealed = false;
+      state.voiceParts = parts.length ? parts : ['3rd'];
+      state.focusedChordIndex = 0;
       render();
     });
   });
 
-  const overlayCb = document.getElementById('gt-overlay');
-  if (overlayCb) {
-    overlayCb.addEventListener('change', (e) => {
-      state.overlay = e.target.checked;
+  // Chord builder: root buttons
+  document.querySelectorAll('.gt-builder-root').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.builderRoot = btn.dataset.root;
+      render();
+    });
+  });
+
+  // Chord builder: quality buttons
+  document.querySelectorAll('.gt-builder-quality').forEach(btn => {
+    btn.addEventListener('click', () => {
+      state.builderQuality = btn.dataset.quality;
+      render();
+    });
+  });
+
+  // Chord builder: add button
+  const builderAdd = document.getElementById('gt-builder-add');
+  if (builderAdd) {
+    builderAdd.addEventListener('click', () => {
+      const root = state.builderRoot.replace(/♯/g, '#').replace(/♭/g, 'b');
+      const quality = state.builderQuality;
+      const chordName = quality === 'maj' ? root : root + quality;
+      state.customInput = state.customInput.trim()
+        ? state.customInput.trim() + ' ' + chordName
+        : chordName;
+      state.focusedChordIndex = 0;
       render();
     });
   }
 
-  const fullFbCb = document.getElementById('gt-full-fb');
-  if (fullFbCb) {
-    fullFbCb.addEventListener('change', (e) => {
-      state.fullFretboard = e.target.checked;
-      state.practiceStep = 0;
-      state.revealed = false;
+  // Chord builder: clear button
+  const builderClear = document.getElementById('gt-builder-clear');
+  if (builderClear) {
+    builderClear.addEventListener('click', () => {
+      state.customInput = '';
+      state.focusedChordIndex = 0;
       render();
     });
   }
 
-  const startFretInput = document.getElementById('gt-start-fret');
-  if (startFretInput) {
-    startFretInput.addEventListener('change', (e) => {
-      const v = parseInt(e.target.value);
-      if (!isNaN(v) && v >= 0 && v < state.endFret) {
-        state.startFret = v;
-        state.practiceStep = 0;
-        state.revealed = false;
-        render();
-      }
-    });
-  }
-
-  const endFretInput = document.getElementById('gt-end-fret');
-  if (endFretInput) {
-    endFretInput.addEventListener('change', (e) => {
-      const v = parseInt(e.target.value);
-      if (!isNaN(v) && v > state.startFret && v <= 22) {
-        state.endFret = v;
-        state.practiceStep = 0;
-        state.revealed = false;
-        render();
-      }
-    });
-  }
-
-  // Practice mode buttons
-  const revealBtn = document.getElementById('gt-reveal');
-  if (revealBtn) {
-    revealBtn.addEventListener('click', () => {
-      state.revealed = true;
-      render();
-      // Auto-play on reveal
-      playGuideTone();
-    });
-  }
-
-  const nextBtn = document.getElementById('gt-next');
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-      if (state.practiceStep < state.chords.length - 1) {
-        state.practiceStep++;
-        state.revealed = false;
-        render();
-      }
-    });
-  }
-
-  const resetBtn = document.getElementById('gt-reset-practice');
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      state.practiceStep = 0;
-      state.revealed = false;
+  // Chord builder: remove individual chord badges
+  document.querySelectorAll('.gt-builder-remove').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.idx);
+      if (isNaN(idx)) return;
+      const parts = state.customInput.trim().split(/\s+/);
+      parts.splice(idx, 1);
+      state.customInput = parts.join(' ');
+      state.focusedChordIndex = 0;
       render();
     });
-  }
-
-  // Audio
-  const playBtn = document.getElementById('gt-play');
-  if (playBtn) {
-    playBtn.addEventListener('click', () => {
-      playGuideTone();
-    });
-  }
-
-  const audioModeSel = document.getElementById('gt-audio-mode');
-  if (audioModeSel) {
-    audioModeSel.addEventListener('change', (e) => {
-      state.audioMode = e.target.value;
-    });
-  }
+  });
 }
 
 /**
