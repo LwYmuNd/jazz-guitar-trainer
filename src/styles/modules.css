@@ -1016,3 +1016,32 @@ select optgroup { font-weight: 600; color: var(--text-muted); }
   background: rgba(239,68,68,0.12);
   color: var(--danger);
 }
+
+.nd-scale-ref {
+  margin: 10px 0;
+  padding: 10px 14px;
+  border: 2px solid var(--clay-border);
+  border-radius: var(--radius-xs);
+  background: var(--card-bg);
+  text-align: center;
+}
+.nd-scale-ref-row {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+}
+.nd-scale-ref-row span {
+  min-width: 40px;
+  padding: 4px 6px;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+}
+.nd-scale-ref-notes span {
+  font-weight: 600;
+  color: var(--text);
+}
+.nd-scale-ref-degrees span {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}

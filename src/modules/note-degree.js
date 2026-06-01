@@ -1,8 +1,9 @@
-import { KEY_GROUPS, SCALE_TYPES, NOTES, NOTE_NAMES_FLAT, DEGREE_LABELS, DEGREE_LABELS_ROMAN, getScaleNotes, buildSemiToNameMap, shuffle } from '../core/music-theory.js';
+import { KEY_GROUPS, SCALE_TYPES, NOTES, NOTE_NAMES_FLAT, DEGREE_LABELS, DEGREE_LABELS_ROMAN, getScaleNotes, getSpelledScaleNotes, buildSemiToNameMap, shuffle } from '../core/music-theory.js';
 import { createCustomSelect } from '../components/custom-select.js';
 
 let state = { correct: 0, wrong: 0, currentAnswer: null, active: false, lastQuestion: null };
 let degreeFormat = 'arabic';
+let scaleRefVisible = false;
 let selMode, selKey, selScale;
 
 function getLabels(){ return degreeFormat === 'roman' ? DEGREE_LABELS_ROMAN : DEGREE_LABELS; }
@@ -35,6 +36,7 @@ export function initNoteDegree(){
     <div class="card">
       <h2>固定调音名级数反应练习</h2>
       <div class="controls" id="nd-controls"></div>
+      <div class="nd-scale-ref" id="nd-scale-ref" style="display:none"></div>
       <div class="stats">
         <span>\u6B63\u786E: <b class="num" id="nd-correct">0</b></span>
         <span>\u9519\u8BEF: <b class="num" id="nd-wrong">0</b></span>
@@ -65,6 +67,35 @@ export function initNoteDegree(){
   toggle.innerHTML = '<button class="active" data-fmt="arabic">阿拉伯数字</button><button data-fmt="roman">罗马数字</button>';
   controls.appendChild(toggle);
 
+  const scaleRefBtn = document.createElement('button');
+  scaleRefBtn.className = 'btn btn-secondary';
+  scaleRefBtn.textContent = '显示音阶';
+  scaleRefBtn.addEventListener('click', () => {
+    scaleRefVisible = !scaleRefVisible;
+    scaleRefBtn.textContent = scaleRefVisible ? '隐藏音阶' : '显示音阶';
+    const refEl = document.getElementById('nd-scale-ref');
+    if(scaleRefVisible){
+      refEl.style.display = '';
+      updateScaleRef();
+    } else {
+      refEl.style.display = 'none';
+    }
+  });
+  controls.appendChild(scaleRefBtn);
+
+  function updateScaleRef(){
+    const refEl = document.getElementById('nd-scale-ref');
+    if(!scaleRefVisible) return;
+    const root = selKey.getValue();
+    const scale = SCALE_TYPES.find(s => s.id === selScale.getValue());
+    const spelledNotes = getSpelledScaleNotes(root, scale);
+    const labels = getLabels();
+    const degreeLabels = scale.intervals.map(i => labels[i]);
+    refEl.innerHTML =
+      '<div class="nd-scale-ref-row nd-scale-ref-notes">' + spelledNotes.map(n => `<span>${n}</span>`).join('') + '</div>' +
+      '<div class="nd-scale-ref-row nd-scale-ref-degrees">' + degreeLabels.map(d => `<span>${d}</span>`).join('') + '</div>';
+  }
+
   const startBtn = document.createElement('button');
   startBtn.className = 'btn btn-primary';
   startBtn.textContent = '\u5F00\u59CB\u7EC3\u4E60';
@@ -83,8 +114,12 @@ export function initNoteDegree(){
     toggle.querySelectorAll('button').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     degreeFormat = btn.dataset.fmt;
+    updateScaleRef();
     if(state.active) next();
   });
+
+  selKey.addEventListener('change', updateScaleRef);
+  selScale.addEventListener('change', updateScaleRef);
 
   function start(){
     state = { correct: 0, wrong: 0, currentAnswer: null, active: true, lastQuestion: null };
